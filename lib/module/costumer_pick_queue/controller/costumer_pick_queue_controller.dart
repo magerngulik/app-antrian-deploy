@@ -16,6 +16,7 @@ class CostumerPickQueueController extends GetxController {
   final colorManager = ColorManager();
 
   int selectedService = 1;
+  var isLoading = false.obs;
 
   getServices() async {
     var source = await servicesCostumer.getServices();
@@ -27,23 +28,32 @@ class CostumerPickQueueController extends GetxController {
     });
   }
 
-  getTicketQueue(int index) async {
-
-    var source = await servicesCostumer.getTicketQueue(index);
-    source.fold((l) {
-      Get.snackbar("Opps", "Error: $l", duration: const Duration(seconds: 3));
-    }, (r) {
-      var sourceS = r;
-      String kode = sourceS['kode'];
-      Get.defaultDialog(
-        title: 'Berhasil Mendapatkan Ticket',
-        middleText: kode,
-        textConfirm: 'Kembali',
-        onConfirm: () {
-          Get.back();
-        },
-      );
-    });
+  void getTicketQueue(int index) async {
+    // Tampilkan loading indicator
+    Get.showOverlay(
+      asyncFunction: () async {
+        var source = await servicesCostumer.getTicketQueue(index);
+        // Tampilkan dialog
+        source.fold((l) {
+          Get.snackbar("Opps", "Error: $l",
+              duration: const Duration(seconds: 3));
+        }, (r) {
+          var sourceS = r;
+          String kode = sourceS['kode'];
+          Get.defaultDialog(
+            title: 'Berhasil Mendapatkan Ticket',
+            middleText: kode,
+            textConfirm: 'Kembali',
+            onConfirm: () {
+              Get.back();
+            },
+          );
+        });
+      },
+      loadingWidget: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 
   @override
