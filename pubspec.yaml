@@ -34,6 +34,7 @@ dependencies:
   flutter:
     sdk: flutter
   get: null
+  intl: ^0.18.1
   shared_preferences: ^2.2.1
   sidebarx: ^0.16.2
 

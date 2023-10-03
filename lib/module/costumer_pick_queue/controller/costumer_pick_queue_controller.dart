@@ -1,7 +1,9 @@
 import 'package:antrian_app/module/costumer_pick_queue/data/costumer_services.dart';
+import 'package:antrian_app/shared/services/m_dialog.dart';
 import 'package:antrian_app/shared/util/q_color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../view/costumer_pick_queue_view.dart';
 
 class CostumerPickQueueController extends GetxController {
@@ -17,6 +19,14 @@ class CostumerPickQueueController extends GetxController {
 
   int selectedService = 1;
   var isLoading = false.obs;
+  testDialog() {
+    // Get.dialog(MDialogTicket(
+    //   kode: "A001",
+    //   onTap: () {
+    //     Get.back();
+    //   },
+    // ));
+  }
 
   getServices() async {
     var source = await servicesCostumer.getServices();
@@ -40,14 +50,21 @@ class CostumerPickQueueController extends GetxController {
         }, (r) {
           var sourceS = r;
           String kode = sourceS['kode'];
-          Get.defaultDialog(
-            title: 'Berhasil Mendapatkan Ticket',
-            middleText: kode,
-            textConfirm: 'Kembali',
-            onConfirm: () {
+
+          DateTime createdAt = DateTime.parse(sourceS['created_at']);
+
+          // Menggunakan pustaka intl untuk memformat tanggal dan waktu
+          String formattedDate = DateFormat('yyyy-MM-dd').format(createdAt);
+          String formattedTime = DateFormat('HH:mm:ss').format(createdAt);
+
+          Get.dialog(MDialogTicket(
+            kode: kode,
+            tanggal: formattedDate,
+            waktu: formattedTime,
+            onTap: () {
               Get.back();
             },
-          );
+          ));
         });
       },
       loadingWidget: const Center(

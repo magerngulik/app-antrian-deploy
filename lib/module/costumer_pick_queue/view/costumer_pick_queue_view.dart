@@ -80,17 +80,6 @@ class CostumerPickQueueView extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  height: 100.0,
-                  decoration: const BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(
-                        8.0,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
@@ -202,6 +191,16 @@ class CostumerPickQueueView extends StatelessWidget {
                               );
                             }),
                           ),
+                          // ElevatedButton(
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: Colors.blueGrey,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(12),
+                          //     ),
+                          //   ),
+                          //   onPressed: () => controller.testDialog(),
+                          //   child: const Text("Save"),
+                          // ),
                         ],
                       ),
                     ),
