@@ -1,10 +1,5 @@
-import 'package:antrian_app/constants.dart';
 import 'package:antrian_app/core.dart';
-import 'package:antrian_app/module/navigation/view/navigation_view.dart';
-import 'package:antrian_app/module/navigation/widget/layout_view.dart';
-import 'package:antrian_app/module/navigation/widget/top_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class MyApp extends StatelessWidget {
@@ -23,6 +18,12 @@ class MyApp extends StatelessWidget {
         break;
       case 3:
         mainScreen = const CostumerPickQueueView();
+        break;
+      case 4:
+        mainScreen = const UserPickRoleView();
+        break;
+      case 5:
+        mainScreen = const UserPickQueueView();
         break;
       default:
         mainScreen = Container();

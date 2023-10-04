@@ -23,7 +23,7 @@ class SharedPreferencesHelper {
     int? userId = prefs.getInt('user_id');
     String? userName = prefs.getString('user_name');
     String? userEmail = prefs.getString('user_email');
-    String? userAssignment = prefs.getString('user_assignment');
+    int? userAssignment = prefs.getInt('user_assignment');
 
     Map<String, dynamic> userData = {
       'token': token,

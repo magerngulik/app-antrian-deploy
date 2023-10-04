@@ -7,12 +7,11 @@ import 'package:flutter/material.dart';
 class AuthServices {
   Future<Either<String, Map<String, dynamic>>> doLogin(
       {required String email, required String password}) async {
-    String baseUrl = baseUrlX;
     debugPrint("email => $email");
     debugPrint("password => $password");
     try {
       var response = await Dio().post(
-        "$baseUrl/api/auth/login",
+        loginUser,
         options: Options(
           headers: {
             "Content-Type": "application/json",
