@@ -38,8 +38,6 @@ class RoleServices {
 
   Future<Either<String, Map<String, dynamic>>> pickRole(
       {required int idUser, required int roleUser}) async {
-    // debugPrint("url: $baseUrl/chose-assignment");
-    debugPrint("url get pick assignment=> $getPickAssigment");
     try {
       var response = await Dio().post(
         getPickAssigment,

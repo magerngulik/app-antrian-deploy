@@ -16,56 +16,60 @@ class MDialogError extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      content: SizedBox(
-        height: 200,
-        width: 200,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.warning,
-              size: 80,
-              color: Colors.red,
-            ),
-            const Text(
-              'Warning',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25.0,
+      content: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 3,
+          width: MediaQuery.of(context).size.height / 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.warning,
+                size: 80,
+                color: Colors.red,
               ),
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            Text(
-              message,
-              style: const TextStyle(
-                fontSize: 14.0,
-              ),
-            ),
-            const SizedBox(
-              height: 25.0,
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () => onTap(),
-                child: const Text(
-                  "Kembali",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                  ),
+              const Text(
+                'Warning',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25.0,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                ),
+              ),
+              const SizedBox(
+                height: 25.0,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () => onTap(),
+                  child: const Text(
+                    "Kembali",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -89,6 +89,7 @@ class FirstBoxPickQueue extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Text(
                         layanan,
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 40.0,
                           fontWeight: FontWeight.bold,
@@ -114,6 +115,7 @@ class FirstBoxPickQueue extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Text(
                         loket,
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.bold,

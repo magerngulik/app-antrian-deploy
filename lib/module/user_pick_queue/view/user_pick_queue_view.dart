@@ -28,10 +28,10 @@ class UserPickQueueView extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 4,
-                  child: const FirstBoxPickQueue(
-                      layanan: "Costumer Services",
-                      loket: "Costumer services 1",
-                      nomorAntrian: "A002"),
+                  child: FirstBoxPickQueue(
+                      layanan: controller.layanan,
+                      loket: controller.unit,
+                      nomorAntrian: controller.currentQueue),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -41,9 +41,10 @@ class UserPickQueueView extends StatelessWidget {
                     height: MediaQuery.of(context).size.height / 2,
                     child: SecondBoxPickQueue(
                       numberWaiting: 99,
-                      titleFunction1: "Call",
+                      titleFunction1: "CALL",
                       ontapFunction1: () {
                         debugPrint("data 1");
+                        controller.pickQueue();
                       },
                       titleFunction2: "RECALL",
                       ontapFunction2: () {

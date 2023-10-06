@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var number = 5;
+    var number = 2;
     Widget mainScreen = Container();
     switch (number) {
       case 1:

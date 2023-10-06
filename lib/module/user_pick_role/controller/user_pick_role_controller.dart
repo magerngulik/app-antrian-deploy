@@ -5,6 +5,7 @@ import 'package:antrian_app/shared/util/q_save_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../view/user_pick_role_view.dart';
 
 class UserPickRoleController extends GetxController {
@@ -31,7 +32,7 @@ class UserPickRoleController extends GetxController {
   loadRole() async {
     var data = await roleServices.getRoleUser();
     data.fold((l) {
-      // rshowDialog("Gagal load data: $l");
+      Get.back();
     }, (r) {
       dataRole = r;
     });
@@ -47,8 +48,11 @@ class UserPickRoleController extends GetxController {
 
   checkRole() {
     if (selectedRole == null) {
-      Get.dialog(
-          MDialogError(onTap: () {}, message: "Pilih role terlebih dahulu"));
+      Get.dialog(MDialogError(
+          onTap: () {
+            Get.back();
+          },
+          message: "Pilih role terlebih dahulu"));
       return;
     }
   }
@@ -56,6 +60,16 @@ class UserPickRoleController extends GetxController {
   getUser() async {
     userData = await SharedPreferencesHelper.fetchDataFromSharedPreferences();
     idUser = userData['user']['id'];
+  }
+
+  userUpdate(
+      {required int idAssignment,
+      required String layanan,
+      required String unit}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('user_assignment', idAssignment);
+    await prefs.setString('user_layanan', layanan);
+    await prefs.setString('user_unit', unit);
   }
 
   postRole() async {
@@ -79,10 +93,17 @@ class UserPickRoleController extends GetxController {
           var data = await roleServices.pickRole(
               idUser: idUser, roleUser: selectedRole!);
           data.fold((l) {
-            Get.dialog(MDialogError(onTap: () {}, message: "error: $l"));
+            Get.dialog(MDialogError(
+                onTap: () {
+                  Get.back();
+                },
+                message: "error: $l"));
           }, (r) {
             log.d(r);
-            debugPrint("data success pick role => $r");
+            userUpdate(
+                idAssignment: r['assignment']['id'],
+                layanan: r['assignment']['layanan'],
+                unit: r['assignment']['unit']);
             Get.off(const UserPickQueueView());
           });
         },

@@ -97,6 +97,7 @@ class UserPickRoleView extends StatelessWidget {
                           child: Center(
                             child: Text(
                               "${data['nama_role']}",
+                              textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,

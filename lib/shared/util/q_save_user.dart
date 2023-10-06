@@ -13,6 +13,8 @@ class SharedPreferencesHelper {
 
     if (data['user']['assignment'] != null) {
       await prefs.setInt('user_assignment', data['user']['assignment']);
+      await prefs.setString('user_layanan', data['user']['layanan']);
+      await prefs.setString('user_unit', data['user']['unit']);
     }
   }
 
@@ -24,6 +26,8 @@ class SharedPreferencesHelper {
     String? userName = prefs.getString('user_name');
     String? userEmail = prefs.getString('user_email');
     int? userAssignment = prefs.getInt('user_assignment');
+    String? userLayanan = prefs.getString('user_layanan');
+    String? userUnit = prefs.getString('user_unit');
 
     Map<String, dynamic> userData = {
       'token': token,
@@ -32,6 +36,8 @@ class SharedPreferencesHelper {
         'name': userName,
         'email': userEmail,
         'assignment': userAssignment,
+        'user_layanan': userLayanan,
+        'user_unit': userUnit,
       },
     };
 
@@ -40,6 +46,8 @@ class SharedPreferencesHelper {
     debugPrint('User Name: ${userData['user']['name']}');
     debugPrint('User Email: ${userData['user']['email']}');
     debugPrint('User Assignment: ${userData['user']['assignment']}');
+    debugPrint('User userLayanan: ${userData['user']['user_layanan']}');
+    debugPrint('User Assignment: ${userData['user']['user_unit']}');
 
     return userData;
   }
