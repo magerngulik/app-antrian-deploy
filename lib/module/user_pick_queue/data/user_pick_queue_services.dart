@@ -42,17 +42,17 @@ class UserPickQueueServices {
 
   Future<Either<String, Map<String, dynamic>>> viewQueue(
       int assignmentId) async {
+    debugPrint("url view queue: $viewQueueSingleUserUrl/$assignmentId");
+    debugPrint("url assignment id: $assignmentId");
     try {
       var response = await Dio().get(
-        viewQueueUserUrl,
+        "$viewQueueSingleUserUrl/$assignmentId",
         options: Options(
           headers: {
             "Content-Type": "application/json",
           },
         ),
       );
-      // debugPrint("ini response");
-      // debugPrint(response.data.toString());
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = response.data;
         return Right(responseData);
@@ -67,6 +67,82 @@ class UserPickQueueServices {
         } else if (e.response!.statusCode == 404) {
           return Left(e.response!.data['message']);
         } else if (e.response!.statusCode == 400) {
+          return Left(e.response!.data['message']);
+        } else {
+          return Left(e.response!.statusCode.toString());
+        }
+      }
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, Map<String, dynamic>>> confirmQueue(
+      int assignmentId) async {
+    debugPrint("$confirmQueueUserUrl/$assignmentId");
+    try {
+      var response = await Dio().get(
+        "$confirmQueueUserUrl/$assignmentId",
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = response.data;
+        return Right(responseData);
+      } else {
+        return const Left("Failed to fetch data");
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint("status code ${e.response!.statusCode.toString()}");
+        if (e.response!.statusCode == 401) {
+          return Left(e.response!.data['message']);
+        } else if (e.response!.statusCode == 404) {
+          return const Left("Belum pelayanan yang harus di sudahi");
+        } else if (e.response!.statusCode == 400) {
+          return Left(e.response!.data['message']);
+        } else if (e.response!.statusCode == 500) {
+          return Left(e.response!.data['message']);
+        } else {
+          return Left(e.response!.statusCode.toString());
+        }
+      }
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, Map<String, dynamic>>> skipQueue(
+      int assignmentId) async {
+    debugPrint("$skipQueueUserUrl/$assignmentId");
+    try {
+      var response = await Dio().get(
+        "$skipQueueUserUrl/$assignmentId",
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = response.data;
+        return Right(responseData);
+      } else {
+        return const Left("Failed to fetch data");
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        debugPrint("status code ${e.response!.statusCode.toString()}");
+        if (e.response!.statusCode == 401) {
+          return Left(e.response!.data['message']);
+        } else if (e.response!.statusCode == 404) {
+          return const Left("Belum pelayanan yang bisa di skip");
+        } else if (e.response!.statusCode == 400) {
+          return Left(e.response!.data['message']);
+        } else if (e.response!.statusCode == 500) {
           return Left(e.response!.data['message']);
         } else {
           return Left(e.response!.statusCode.toString());

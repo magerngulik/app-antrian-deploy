@@ -17,6 +17,7 @@ class UserPickQueueController extends GetxController {
   String layanan = "";
   String unit = "";
   String currentQueue = "-";
+  int waitingQueue = 0;
   //services
   UserPickQueueServices services = UserPickQueueServices();
   //error
@@ -28,7 +29,6 @@ class UserPickQueueController extends GetxController {
   void onInit() {
     super.onInit();
     getUser();
-    getCurrentQueue();
   }
 
   pickQueue() async {
@@ -44,7 +44,6 @@ class UserPickQueueController extends GetxController {
       getCurrentQueue();
       debugPrint("Data Role =$data");
     });
-  
   }
 
   getCurrentQueue() async {
@@ -55,15 +54,25 @@ class UserPickQueueController extends GetxController {
             Get.back();
           },
           message: "error : $l"));
-      currentQueue = "-";
+      update();
     }, (r) {
-      var source = r;
-      var lastData = source['last']['kode'];
-      currentQueue = lastData;
+      var source = r['data'];
+      var queue = source['queue'];
+      var waitingCount = source['last_queue'];
+      debugPrint("queue: $queue");
+      debugPrint("waiting queue = $waitingCount");
+      if (queue == null) {
+        currentQueue = "-";
+      } else {
+        var waitingCode = queue['kode'];
+        currentQueue = waitingCode;
+      }
+      waitingQueue = waitingCount;
+      update();
     });
-    update();
   }
 
+//get user yang sedang login
   getUser() async {
     userData = await SharedPreferencesHelper.fetchDataFromSharedPreferences();
     idUser = userData['user']['id'];
@@ -74,5 +83,70 @@ class UserPickQueueController extends GetxController {
     layanan = userData['user']['user_layanan'];
     unit = userData['user']['user_unit'];
     update();
+    getCurrentQueue();
+    print("---------------");
+    print("name:$name");
+    print("name:$email");
+    print("name:$assignmentId");
+    print("---------------");
   }
+
+  //menyudahi sessi pelayanan, merubah status dari queue costumer menjadi complete
+  confirmQueue() async {
+    var data = await services.confirmQueue(assignmentId);
+    debugPrint("assignment id = $assignmentId");
+    data.fold((l) {
+      Get.dialog(MDialogError(
+          onTap: () {
+            Get.back();
+          },
+          message: l));
+    }, (r) {
+      var message = r['message'];
+      Get.dialog(MDialogSuccess(
+          onTap: () {
+            getCurrentQueue();
+            Get.back();
+          },
+          message: message));
+      getCurrentQueue();
+    });
+  }
+
+  //menyudahi sessi pelayanan, merubah status dari queue costumer menjadi complete
+  skipQueue() async {
+    var data = await services.skipQueue(assignmentId);
+    debugPrint("assignment id = $assignmentId");
+    data.fold((l) {
+      Get.dialog(MDialogError(
+          onTap: () {
+            Get.back();
+          },
+          message: l));
+    }, (r) {
+      var message = r['message'];
+      Get.dialog(MDialogSuccess(
+          onTap: () {
+            getCurrentQueue();
+            Get.back();
+          },
+          message: message));
+      getCurrentQueue();
+    });
+  }
+
+  // viewQueueData() async {
+  //   var data = await services.confirmQueue(assignmentId);
+  //   debugPrint("assignment id = $assignmentId");
+  //   data.fold((l) {
+  //     Get.dialog(MDialogError(
+  //         onTap: () {
+  //           Get.back();
+  //         },
+  //         message: l));
+  //   }, (r) {
+  //     var message = r['message'];
+  //     Get.dialog(MDialogSuccess(onTap: () {}, message: message));
+  //   });
+  // }
 }

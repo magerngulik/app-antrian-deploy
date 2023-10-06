@@ -10,6 +10,14 @@ class LoginController extends GetxController {
   LoginView? view;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+
+  @override
+  void onInit() {
+    super.onInit();
+    password.text = "password";
+    email.text = "admin@admin.com";
+  }
+
   String backgroundImage =
       "https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
   doLogin() async {
@@ -27,10 +35,10 @@ class LoginController extends GetxController {
             return;
           }
           var services = AuthServices();
+          print(email.text);
           var data = await services.doLogin(
               email: email.text, password: password.text);
           data.fold((l) {
-            // rshowDialog("email dan password salah $l");
             Get.dialog(MDialogError(
                 onTap: () {
                   Get.back();

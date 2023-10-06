@@ -5,6 +5,29 @@ class SharedPreferencesHelper {
   static Future<void> saveDataToSharedPreferences(
       Map<String, dynamic> data) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint("data sebelum di simpan: $data");
+
+    if (prefs.containsKey('token')) {
+      prefs.remove('token');
+    }
+    if (prefs.containsKey('user_id')) {
+      prefs.remove('user_id');
+    }
+    if (prefs.containsKey('user_name')) {
+      prefs.remove('user_name');
+    }
+    if (prefs.containsKey('user_email')) {
+      prefs.remove('user_email');
+    }
+    if (prefs.containsKey('user_assignment')) {
+      prefs.remove('user_assignment');
+    }
+    if (prefs.containsKey('user_layanan')) {
+      prefs.remove('user_layanan');
+    }
+    if (prefs.containsKey('user_unit')) {
+      prefs.remove('user_unit');
+    }
 
     await prefs.setString('token', data['token']);
     await prefs.setInt('user_id', data['user']['id']);

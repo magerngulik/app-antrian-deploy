@@ -7,3 +7,6 @@ String getRoleUserUrl = "$baseUrlX/get-role";
 String getPickAssigment = "$baseUrlX/chose-assignment";
 String pickQueueUrl = "$baseUrlX/pick-queue";
 String viewQueueUserUrl = "$baseUrlX/test-view-queue";
+String viewQueueSingleUserUrl = "$baseUrlX/view-queue-user";
+String confirmQueueUserUrl = "$baseUrlX/confirm-queue-user";
+String skipQueueUserUrl = "$baseUrlX/skip-queue-user";

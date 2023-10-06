@@ -19,14 +19,6 @@ class CostumerPickQueueController extends GetxController {
 
   int selectedService = 1;
   var isLoading = false.obs;
-  testDialog() {
-    // Get.dialog(MDialogTicket(
-    //   kode: "A001",
-    //   onTap: () {
-    //     Get.back();
-    //   },
-    // ));
-  }
 
   getServices() async {
     var source = await servicesCostumer.getServices();

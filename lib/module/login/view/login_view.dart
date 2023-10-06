@@ -175,21 +175,40 @@ class LoginView extends StatelessWidget {
                                     const SizedBox(
                                       height: 20.0,
                                     ),
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CostumerPickQueueView()),
-                                        );
-                                      },
-                                      child: const Text(
-                                        "Menu Antrian Costumer",
-                                        style: TextStyle(
-                                          color: Colors.orangeAccent,
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const CostumerPickQueueView()),
+                                            );
+                                          },
+                                          child: const Text(
+                                            "Menu Antrian Costumer",
+                                            style: TextStyle(
+                                              color: Colors.orangeAccent,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        InkWell(
+                                          onTap: () {
+                                            Get.to(const LayarView());
+                                          },
+                                          child: const Text(
+                                            "Menu Antrian Layar",
+                                            style: TextStyle(
+                                              color: Colors.orangeAccent,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(
                                       height: 10.0,

@@ -6,8 +6,6 @@ import 'package:get/get.dart';
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/module/user_pick_queue/widget/secondBoxPickQueue.dart';
 
-import '../controller/user_pick_queue_controller.dart';
-
 class UserPickQueueView extends StatelessWidget {
   const UserPickQueueView({Key? key}) : super(key: key);
 
@@ -19,6 +17,45 @@ class UserPickQueueView extends StatelessWidget {
         controller.view = this;
 
         return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "Main Screen",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {},
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  controller.getCurrentQueue();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () {
+                  Get.to(const CostumerPickQueueView())?.then((value) {
+                    controller.getCurrentQueue();
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  Get.dialog(MDialogLogout(
+                    onTap: () {
+                      Get.offAll(const LoginView());
+                    },
+                  ));
+                },
+              )
+            ],
+          ),
           body: Container(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -40,7 +77,7 @@ class UserPickQueueView extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height / 2,
                     child: SecondBoxPickQueue(
-                      numberWaiting: 99,
+                      numberWaiting: controller.waitingQueue,
                       titleFunction1: "CALL",
                       ontapFunction1: () {
                         debugPrint("data 1");
@@ -52,10 +89,12 @@ class UserPickQueueView extends StatelessWidget {
                       },
                       titleFunction3: "CONFIRM",
                       ontapFunction3: () {
+                        controller.confirmQueue();
                         debugPrint("data 3");
                       },
                       titleFunction4: "SKIP",
                       ontapFunction4: () {
+                        controller.skipQueue();
                         debugPrint("data 4");
                       },
                     )),

@@ -76,6 +76,71 @@ class MDialogError extends StatelessWidget {
   }
 }
 
+class MDialogLogout extends StatelessWidget {
+  final Function() onTap;
+
+  const MDialogLogout({
+    super.key,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: const SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Icon(
+              Icons.warning,
+              size: 80,
+              color: Colors.red,
+            ),
+            Text(
+              'Warning',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 25.0,
+              ),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              "Apakah anda yakin ingin keluar?",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+            ),
+            SizedBox(
+              height: 25.0,
+            ),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("No"),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+          onPressed: () => onTap(),
+          child: const Text("Yes"),
+        ),
+      ],
+    );
+  }
+}
+
 class MDialogSuccess extends StatelessWidget {
   final Function() onTap;
   final String message;
