@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/module/layar/data/costumer_layar_services.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:dartz/dartz_streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -110,22 +112,62 @@ class LayarController extends GetxController {
 
     if (kode != savedKodePelayanan) {
       debugPrint("kode: Data baru");
+      await playSoundFromCode(kode);
     } else {
       if (timeCreated == savedCreatedAt) {
         if (timeUpdate != savedUpdatedAt) {
           debugPrint("kode: Recall di panggil");
-          Get.dialog(
-              MDialogSuccess(onTap: () {}, message: "recall di panggil"));
+          await playSoundFromCode(kode);
         }
       }
     }
+  }
 
-    debugPrint("Kode : sebelum = $savedKodePelayanan");
-    debugPrint("Kode : sesudah = $kode");
-    debugPrint("Kode : created sebelum = $savedCreatedAt");
-    debugPrint("Kode : created sesudah = $timeCreated");
-    debugPrint("Kode : updateed sebelum = $savedUpdatedAt");
-    debugPrint("Kode : updateed sesudah = $timeUpdate");
+  Future<void> playSoundFromCode(String code) async {
+    final player = AudioPlayer();
+
+    for (int i = 0; i < code.length; i++) {
+      final character = code[i].toLowerCase();
+      debugPrint(character);
+      if (character == 'a') {
+        AssetSource assetSource = AssetSource("sound/a.mp3");
+        await player.play(assetSource);
+      } else if (character == '0') {
+        AssetSource assetSource = AssetSource("sound/0.mp3");
+        await player.play(assetSource);
+      } else if (character == '1') {
+        AssetSource assetSource = AssetSource("sound/1.mp3");
+        await player.play(assetSource);
+      } else if (character == '2') {
+        AssetSource assetSource = AssetSource("sound/2.mp3");
+        await player.play(assetSource);
+      } else if (character == '3') {
+        AssetSource assetSource = AssetSource("sound/3.mp3");
+        await player.play(assetSource);
+      } else if (character == '4') {
+        AssetSource assetSource = AssetSource("sound/4.mp3");
+        await player.play(assetSource);
+      } else if (character == '5') {
+        AssetSource assetSource = AssetSource("sound/5.mp3");
+        await player.play(assetSource);
+      } else if (character == '6') {
+        AssetSource assetSource = AssetSource("sound/6.mp3");
+        await player.play(assetSource);
+      } else if (character == '7') {
+        AssetSource assetSource = AssetSource("sound/7.mp3");
+        await player.play(assetSource);
+      } else if (character == '8') {
+        AssetSource assetSource = AssetSource("sound/8.mp3");
+        await player.play(assetSource);
+      } else if (character == '9') {
+        AssetSource assetSource = AssetSource("sound/9.mp3");
+        await player.play(assetSource);
+      }
+
+      // Menghapus perintah player.stop() karena ini akan membatalkan pemutaran
+      // Menggunakan await untuk Future.delayed agar menunggu selama 2 detik sebelum lanjut ke karakter berikutnya.
+      await Future.delayed(const Duration(seconds: 1));
+    }
   }
 
   final YoutubePlayerController ytcontroller = YoutubePlayerController(
