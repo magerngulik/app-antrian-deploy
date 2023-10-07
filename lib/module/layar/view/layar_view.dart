@@ -1,5 +1,6 @@
 import 'package:antrian_app/module/layar/widget/m_container_layer.dart';
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../controller/layar_controller.dart';
 import 'package:antrian_app/core.dart';
 import 'package:get/get.dart';
@@ -87,11 +88,33 @@ class LayarView extends StatelessWidget {
                           child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 10.0),
-                            decoration: const BoxDecoration(
-                              color: Colors.blueAccent,
-                              borderRadius: BorderRadius.all(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                width: 20.0,
+                                color: Colors.grey[350]!,
+                              ),
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(
-                                  8.0,
+                                  50.0,
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12.0),
+                                  ),
+                                ),
+                                child: YoutubePlayer(
+                                  controller: controller.ytcontroller,
+                                  showVideoProgressIndicator: true,
+                                  progressIndicatorColor: Colors.blueAccent,
+                                  progressColors: const ProgressBarColors(
+                                    playedColor: Colors.blue,
+                                    handleColor: Colors.blueAccent,
+                                  ),
                                 ),
                               ),
                             ),

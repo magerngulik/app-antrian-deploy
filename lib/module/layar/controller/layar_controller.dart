@@ -5,6 +5,7 @@ import 'package:antrian_app/module/layar/data/costumer_layar_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../view/layar_view.dart';
 
 class LayarController extends GetxController {
@@ -103,7 +104,7 @@ class LayarController extends GetxController {
       required String timeUpdate}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String savedKodePelayanan = prefs.getString('kodePelayanan') ?? '';
-    String savedLoket = prefs.getString('loket') ?? '';
+    // String savedLoket = prefs.getString('loket') ?? '';
     String savedCreatedAt = prefs.getString('createdAt') ?? '';
     String savedUpdatedAt = prefs.getString('updatedAt') ?? '';
 
@@ -126,4 +127,11 @@ class LayarController extends GetxController {
     debugPrint("Kode : updateed sebelum = $savedUpdatedAt");
     debugPrint("Kode : updateed sesudah = $timeUpdate");
   }
+
+  final YoutubePlayerController ytcontroller = YoutubePlayerController(
+    initialVideoId: YoutubePlayer.convertUrlToId(
+            "https://www.youtube.com/watch?v=z_6GOFw1XrQ") ??
+        "z_6GOFw1XrQ",
+    flags: const YoutubePlayerFlags(autoPlay: true, mute: false, loop: true),
+  );
 }
