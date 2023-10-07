@@ -164,8 +164,6 @@ class LayarController extends GetxController {
         await player.play(assetSource);
       }
 
-      // Menghapus perintah player.stop() karena ini akan membatalkan pemutaran
-      // Menggunakan await untuk Future.delayed agar menunggu selama 2 detik sebelum lanjut ke karakter berikutnya.
       await Future.delayed(const Duration(seconds: 1));
     }
   }
