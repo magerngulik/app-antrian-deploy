@@ -135,18 +135,24 @@ class UserPickQueueController extends GetxController {
     });
   }
 
-  // viewQueueData() async {
-  //   var data = await services.confirmQueue(assignmentId);
-  //   debugPrint("assignment id = $assignmentId");
-  //   data.fold((l) {
-  //     Get.dialog(MDialogError(
-  //         onTap: () {
-  //           Get.back();
-  //         },
-  //         message: l));
-  //   }, (r) {
-  //     var message = r['message'];
-  //     Get.dialog(MDialogSuccess(onTap: () {}, message: message));
-  //   });
-  // }
+  recallQueue() async {
+    var data = await services.recallQueue(assignmentId);
+    debugPrint("assignment id = $assignmentId");
+    data.fold((l) {
+      Get.dialog(MDialogError(
+          onTap: () {
+            Get.back();
+          },
+          message: l));
+    }, (r) {
+      var message = r['message'];
+      Get.dialog(MDialogSuccess(
+          onTap: () {
+            getCurrentQueue();
+            Get.back();
+          },
+          message: message));
+      getCurrentQueue();
+    });
+  }
 }

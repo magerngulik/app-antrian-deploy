@@ -80,22 +80,19 @@ class UserPickQueueView extends StatelessWidget {
                       numberWaiting: controller.waitingQueue,
                       titleFunction1: "CALL",
                       ontapFunction1: () {
-                        debugPrint("data 1");
                         controller.pickQueue();
                       },
                       titleFunction2: "RECALL",
                       ontapFunction2: () {
-                        debugPrint("data 2");
+                        controller.recallQueue();
                       },
                       titleFunction3: "CONFIRM",
                       ontapFunction3: () {
                         controller.confirmQueue();
-                        debugPrint("data 3");
                       },
                       titleFunction4: "SKIP",
                       ontapFunction4: () {
                         controller.skipQueue();
-                        debugPrint("data 4");
                       },
                     )),
               ],
