@@ -151,7 +151,7 @@ class LayarController extends GetxController {
       String lastCharackter = loket[loket.length - 1];
       debugPrint("last charakter: $lastCharackter");
       await player.play(AssetSource("sound/ke_kostumer_services.mp3"));
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 2));
       await player.play(AssetSource("sound/$lastCharackter.mp3"));
       await Future.delayed(const Duration(seconds: 1));
     }
