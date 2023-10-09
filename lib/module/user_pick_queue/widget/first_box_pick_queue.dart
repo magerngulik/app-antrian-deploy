@@ -29,6 +29,7 @@ class FirstBoxPickQueue extends StatelessWidget {
               children: [
                 const Text(
                   "Now Serving",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,

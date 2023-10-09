@@ -1,10 +1,6 @@
 import 'package:antrian_app/core.dart';
-import 'package:antrian_app/module/login/data/auth_service.dart';
-import 'package:antrian_app/shared/services/m_dialog.dart';
-import 'package:antrian_app/shared/util/q_save_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../view/login_view.dart';
 
 class LoginController extends GetxController {
   LoginView? view;
@@ -35,7 +31,7 @@ class LoginController extends GetxController {
             return;
           }
           var services = AuthServices();
-          print(email.text);
+          debugPrint(email.text);
           var data = await services.doLogin(
               email: email.text, password: password.text);
           data.fold((l) {

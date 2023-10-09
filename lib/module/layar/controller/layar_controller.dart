@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/module/layar/data/costumer_layar_services.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dartz/dartz_streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,7 +33,7 @@ class LayarController extends GetxController {
   Timer? dataTimer;
 
   void startDataFetching() {
-    const Duration duration = Duration(seconds: 10);
+    const Duration duration = Duration(seconds: 15);
     dataTimer = Timer.periodic(duration, (Timer timer) {
       getData(); // Panggil fungsi getData setiap 5 detik
     });
@@ -52,22 +51,14 @@ class LayarController extends GetxController {
     debugPrint("di panggil ulang");
     var data = await services.viewQueue();
     data.fold((l) {
-      // Get.dialog(MDialogError(
-      //     onTap: () {
-      //       Get.back();
-      //     },
-      //     message: "error :$l"));
+      debugPrint("error: $l");
     }, (r) {
       debugPrint(r.toString());
       if (r['data'] == null) {
         debugPrint("data kosong");
-        // Get.dialog(MDialogSuccess(
-        //     onTap: () {
-        //       Get.back();
-        //     },
-        //     message: r['message']));
       } else {
         var lastData = r['data']['last'];
+        dataList.clear();
         for (var item in r['data']['user_aktif']) {
           if (item is Map<String, dynamic>) {
             dataList.add(item);
@@ -81,7 +72,10 @@ class LayarController extends GetxController {
         debugPrint("created_at: $createdAt");
 
         mVoiceCall(
-            kode: kodePelayanan, timeCreated: createdAt, timeUpdate: updatedAt);
+            kode: kodePelayanan,
+            timeCreated: createdAt,
+            timeUpdate: updatedAt,
+            loket: loket);
 
         saveTemporaryData(
             kode: kodePelayanan, timeCreated: createdAt, timeUpdate: updatedAt);
@@ -89,10 +83,11 @@ class LayarController extends GetxController {
     });
   }
 
-  saveTemporaryData(
-      {required String kode,
-      required String timeCreated,
-      required String timeUpdate}) async {
+  saveTemporaryData({
+    required String kode,
+    required String timeCreated,
+    required String timeUpdate,
+  }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('kodePelayanan', kodePelayanan);
     prefs.setString('loket', loket);
@@ -103,7 +98,8 @@ class LayarController extends GetxController {
   mVoiceCall(
       {required String kode,
       required String timeCreated,
-      required String timeUpdate}) async {
+      required String timeUpdate,
+      required String loket}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String savedKodePelayanan = prefs.getString('kodePelayanan') ?? '';
     // String savedLoket = prefs.getString('loket') ?? '';
@@ -112,62 +108,81 @@ class LayarController extends GetxController {
 
     if (kode != savedKodePelayanan) {
       debugPrint("kode: Data baru");
-      await playSoundFromCode(kode);
+      await playSoundFromCode(kode, loket);
     } else {
       if (timeCreated == savedCreatedAt) {
         if (timeUpdate != savedUpdatedAt) {
           debugPrint("kode: Recall di panggil");
-          await playSoundFromCode(kode);
+          await playSoundFromCode(kode, loket);
         }
       }
     }
   }
 
-  Future<void> playSoundFromCode(String code) async {
+  //untuk memutar suara
+  Future<void> playSoundFromCode(String code, String loket) async {
     final player = AudioPlayer();
 
-    for (int i = 0; i < code.length; i++) {
-      final character = code[i].toLowerCase();
-      debugPrint(character);
-      if (character == 'a') {
-        AssetSource assetSource = AssetSource("sound/a.mp3");
-        await player.play(assetSource);
-      } else if (character == '0') {
-        AssetSource assetSource = AssetSource("sound/0.mp3");
-        await player.play(assetSource);
-      } else if (character == '1') {
-        AssetSource assetSource = AssetSource("sound/1.mp3");
-        await player.play(assetSource);
-      } else if (character == '2') {
-        AssetSource assetSource = AssetSource("sound/2.mp3");
-        await player.play(assetSource);
-      } else if (character == '3') {
-        AssetSource assetSource = AssetSource("sound/3.mp3");
-        await player.play(assetSource);
-      } else if (character == '4') {
-        AssetSource assetSource = AssetSource("sound/4.mp3");
-        await player.play(assetSource);
-      } else if (character == '5') {
-        AssetSource assetSource = AssetSource("sound/5.mp3");
-        await player.play(assetSource);
-      } else if (character == '6') {
-        AssetSource assetSource = AssetSource("sound/6.mp3");
-        await player.play(assetSource);
-      } else if (character == '7') {
-        AssetSource assetSource = AssetSource("sound/7.mp3");
-        await player.play(assetSource);
-      } else if (character == '8') {
-        AssetSource assetSource = AssetSource("sound/8.mp3");
-        await player.play(assetSource);
-      } else if (character == '9') {
-        AssetSource assetSource = AssetSource("sound/9.mp3");
-        await player.play(assetSource);
-      }
+    debugPrint("---------");
 
+    await Future.delayed(const Duration(seconds: 1));
+    await player.play(AssetSource("sound/nomor_antrian.mp3"));
+    await Future.delayed(const Duration(seconds: 1));
+    debugPrint("---------");
+
+    for (int i = 0; i < code.length; i++) {
+      final character = code[i];
+      debugPrint(character);
+      await playSoundForCharacter(character, player);
       await Future.delayed(const Duration(seconds: 1));
+    }
+
+    debugPrint("Ke: ${code[0]}");
+    if (code[0] == "A") {
+      debugPrint("Ke: Teler");
+      String lastCharackter = loket[loket.length - 1];
+      debugPrint("last charakter: $lastCharackter");
+      await player.play(AssetSource("sound/ke_teler.mp3"));
+      await Future.delayed(const Duration(seconds: 1));
+      await player.play(AssetSource("sound/$lastCharackter.mp3"));
+      await Future.delayed(const Duration(seconds: 1));
+    } else if (code[0] == "B") {
+      debugPrint("Ke: Costumer services");
+      String lastCharackter = loket[loket.length - 1];
+      debugPrint("last charakter: $lastCharackter");
+      await player.play(AssetSource("sound/ke_kostumer_services.mp3"));
+      await Future.delayed(const Duration(seconds: 1));
+      await player.play(AssetSource("sound/$lastCharackter.mp3"));
+      await Future.delayed(const Duration(seconds: 1));
+    }
+    await player.dispose();
+    debugPrint("function stop");
+  }
+
+  //untum memulai suara berdasarkan list;
+  Future<void> playSoundForCharacter(
+      String character, AudioPlayer player) async {
+    final soundMap = {
+      'a': "sound/a.mp3",
+      'b': "sound/b.mp3",
+      '0': "sound/0.mp3",
+      '1': "sound/1.mp3",
+      '2': "sound/2.mp3",
+      '3': "sound/3.mp3",
+      '4': "sound/4.mp3",
+      '5': "sound/5.mp3",
+      '6': "sound/6.mp3",
+      '7': "sound/7.mp3",
+      '8': "sound/8.mp3",
+      '9': "sound/9.mp3",
+    };
+
+    if (soundMap.containsKey(character.toLowerCase())) {
+      await player.play(AssetSource(soundMap[character.toLowerCase()]!));
     }
   }
 
+  //untuk putar video youtube
   final YoutubePlayerController ytcontroller = YoutubePlayerController(
     initialVideoId: YoutubePlayer.convertUrlToId(
             "https://www.youtube.com/watch?v=z_6GOFw1XrQ") ??

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class MContainerLayer extends StatelessWidget {
@@ -6,14 +7,15 @@ class MContainerLayer extends StatelessWidget {
   final double margin;
 
   const MContainerLayer({
-    super.key,
-    required this.margin,
+    Key? key,
     required this.loket,
     required this.kode,
-  });
+    required this.margin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var isTablet = MediaQuery.of(context).size.width < 850;
     return Container(
       height: MediaQuery.of(context).size.height / 2.5,
       width: MediaQuery.of(context).size.height / 2.5,
@@ -44,27 +46,31 @@ class MContainerLayer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(
-            height: 30.0,
+            height: 20.0,
           ),
-          Text(
-            loket,
-            style: const TextStyle(
-              fontSize: 30.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          Expanded(
+            flex: 2,
+            child: Text(
+              loket,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: isTablet ? 20 : 30.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
-          const Spacer(),
-          Text(
-            kode,
-            style: const TextStyle(
-              fontSize: 100.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          Expanded(
+            flex: 2,
+            child: Text(
+              kode,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: isTablet ? 50 : 100.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 30.0,
           ),
           const Spacer(),
         ],

@@ -14,7 +14,9 @@ class UserPickRoleView extends StatelessWidget {
         controller.view = this;
 
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
+            backgroundColor: Colors.purple,
             title: const Text(
               "Role User",
               style: TextStyle(
@@ -31,7 +33,7 @@ class UserPickRoleView extends StatelessWidget {
               width: MediaQuery.of(context).size.width / 5,
               height: 60,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
                 onPressed: () {
                   controller.postRole();
                 },
@@ -91,7 +93,7 @@ class UserPickRoleView extends StatelessWidget {
                               border: (controller.selectedIndex == index)
                                   ? Border.all(
                                       width: 5.0,
-                                      color: Colors.blueAccent,
+                                      color: Colors.purple,
                                     )
                                   : const Border()),
                           child: Center(

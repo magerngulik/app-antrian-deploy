@@ -1,12 +1,9 @@
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/module/user_pick_role/data/role_pick_services.dart';
-import 'package:antrian_app/shared/util/q_color.dart';
-import 'package:antrian_app/shared/util/q_save_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../view/user_pick_role_view.dart';
 
 class UserPickRoleController extends GetxController {
   UserPickRoleView? view;

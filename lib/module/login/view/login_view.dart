@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../controller/login_controller.dart';
 import 'package:antrian_app/core.dart';
 import 'package:get/get.dart';
 
@@ -16,12 +15,12 @@ class LoginView extends StatelessWidget {
 
         return Theme(
             data: ThemeData(
-              primaryColor: Colors.orangeAccent,
+              primaryColor: Colors.purple,
               scaffoldBackgroundColor: Colors.white,
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  backgroundColor: Colors.orangeAccent,
+                  backgroundColor: Colors.purple,
                   shape: const StadiumBorder(),
                   maximumSize: const Size(double.infinity, 56),
                   minimumSize: const Size(double.infinity, 56),
@@ -29,9 +28,9 @@ class LoginView extends StatelessWidget {
               ),
               inputDecorationTheme: InputDecorationTheme(
                 filled: true,
-                fillColor: Colors.orangeAccent.withOpacity(0.1),
-                iconColor: Colors.orangeAccent,
-                prefixIconColor: Colors.orangeAccent,
+                fillColor: Colors.purple.withOpacity(0.1),
+                iconColor: Colors.purple,
+                prefixIconColor: Colors.purple,
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 16.0),
                 border: const OutlineInputBorder(
@@ -76,7 +75,7 @@ class LoginView extends StatelessWidget {
                             "Sign In To Bank ABC",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.orangeAccent,
+                                color: Colors.purple,
                                 fontSize: 40),
                           ),
                           SizedBox(height: 16.0 * 2),
@@ -98,7 +97,7 @@ class LoginView extends StatelessWidget {
                                     TextFormField(
                                       keyboardType: TextInputType.emailAddress,
                                       textInputAction: TextInputAction.next,
-                                      cursorColor: Colors.orangeAccent,
+                                      cursorColor: Colors.purple,
                                       controller: controller.email,
                                       decoration: const InputDecoration(
                                         hintText: "Your email",
@@ -114,7 +113,7 @@ class LoginView extends StatelessWidget {
                                       child: TextFormField(
                                         textInputAction: TextInputAction.done,
                                         obscureText: true,
-                                        cursorColor: Colors.orangeAccent,
+                                        cursorColor: Colors.purple,
                                         controller: controller.password,
                                         decoration: const InputDecoration(
                                           hintText: "Your password",
@@ -148,8 +147,8 @@ class LoginView extends StatelessWidget {
                                       children: <Widget>[
                                         const Text(
                                           "Don’t have an Account ? ",
-                                          style: TextStyle(
-                                              color: Colors.orangeAccent),
+                                          style:
+                                              TextStyle(color: Colors.purple),
                                         ),
                                         GestureDetector(
                                           onTap: () {
@@ -165,7 +164,7 @@ class LoginView extends StatelessWidget {
                                           child: const Text(
                                             "Sign Up",
                                             style: TextStyle(
-                                              color: Colors.orangeAccent,
+                                              color: Colors.purple,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -193,7 +192,7 @@ class LoginView extends StatelessWidget {
                                           child: const Text(
                                             "Menu Antrian Costumer",
                                             style: TextStyle(
-                                              color: Colors.orangeAccent,
+                                              color: Colors.purple,
                                             ),
                                           ),
                                         ),
@@ -204,7 +203,7 @@ class LoginView extends StatelessWidget {
                                           child: const Text(
                                             "Menu Antrian Layar",
                                             style: TextStyle(
-                                              color: Colors.orangeAccent,
+                                              color: Colors.purple,
                                             ),
                                           ),
                                         ),
@@ -328,7 +327,7 @@ class LoginView extends StatelessWidget {
                         "Sign In To Bank ABC",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.orange,
+                          color: Colors.purple,
                           fontSize: 28.0,
                         ),
                       ),
@@ -347,7 +346,7 @@ class LoginView extends StatelessWidget {
                               TextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
-                                cursorColor: Colors.orangeAccent,
+                                cursorColor: Colors.purple,
                                 controller: controller.email,
                                 decoration: const InputDecoration(
                                   hintText: "Your email",
@@ -363,7 +362,7 @@ class LoginView extends StatelessWidget {
                                 child: TextFormField(
                                   textInputAction: TextInputAction.done,
                                   obscureText: true,
-                                  cursorColor: Colors.orangeAccent,
+                                  cursorColor: Colors.purple,
                                   controller: controller.password,
                                   decoration: const InputDecoration(
                                     hintText: "Your password",
@@ -392,8 +391,7 @@ class LoginView extends StatelessWidget {
                                 children: <Widget>[
                                   const Text(
                                     "Don’t have an Account ? ",
-                                    style:
-                                        TextStyle(color: Colors.orangeAccent),
+                                    style: TextStyle(color: Colors.purple),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -409,7 +407,7 @@ class LoginView extends StatelessWidget {
                                     child: const Text(
                                       "Sign Up",
                                       style: TextStyle(
-                                        color: Colors.orangeAccent,
+                                        color: Colors.purple,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -422,6 +420,45 @@ class LoginView extends StatelessWidget {
                       ),
                       const Spacer(),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const CostumerPickQueueView()),
+                          );
+                        },
+                        child: const Text(
+                          "Menu Antrian Costumer",
+                          style: TextStyle(
+                            color: Colors.purple,
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Get.to(const LayarView());
+                        },
+                        child: const Text(
+                          "Menu Antrian Layar",
+                          style: TextStyle(
+                            color: Colors.purple,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10.0,
                   ),
                 ],
               ),

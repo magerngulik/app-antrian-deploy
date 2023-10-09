@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:antrian_app/constants.dart';
 import 'package:antrian_app/my_app.dart';

@@ -84,11 +84,11 @@ class UserPickQueueController extends GetxController {
     unit = userData['user']['user_unit'];
     update();
     getCurrentQueue();
-    print("---------------");
-    print("name:$name");
-    print("name:$email");
-    print("name:$assignmentId");
-    print("---------------");
+    debugPrint("---------------");
+    debugPrint("name:$name");
+    debugPrint("name:$email");
+    debugPrint("name:$assignmentId");
+    debugPrint("---------------");
   }
 
   //menyudahi sessi pelayanan, merubah status dari queue costumer menjadi complete

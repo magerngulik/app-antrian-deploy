@@ -1,5 +1,6 @@
 import 'package:antrian_app/constants.dart';
 import 'package:antrian_app/models/menu_item.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppController extends GetxController {
@@ -7,7 +8,7 @@ class AppController extends GetxController {
   MenuItem? menuItem;
 
   void toggleSideBar() {
-    print('TOGGLING SIDE');
+    debugPrint('TOGGLING SIDE');
 
     isDesktop.value = !isDesktop.value;
     update();

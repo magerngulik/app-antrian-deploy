@@ -1,6 +1,4 @@
-import 'package:antrian_app/module/antrian/widget/list_queue.dart';
 import 'package:flutter/material.dart';
-import '../controller/antrian_controller.dart';
 import 'package:antrian_app/core.dart';
 import 'package:get/get.dart';
 
