@@ -20,8 +20,6 @@ class CostumerPickQueueController extends GetxController {
   int selectedService = 1;
   var isLoading = false.obs;
 
-
-
   getServices() async {
     var source = await servicesCostumer.getServices();
     source.fold((l) {

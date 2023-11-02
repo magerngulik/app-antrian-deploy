@@ -1,5 +1,6 @@
 // String baseUrlX = "https://antrian.servicesimager.my.id/api";
-String baseUrlX = "http://antrean-app.test/api";
+// String baseUrlX = "http://antrean-app.test/api";
+String baseUrlX = "http://queue-app.test:90/api";
 String costumerServices = "$baseUrlX/code-queue";
 String costumerPickQueue = "$baseUrlX/costumer-queue";
 String loginUser = "$baseUrlX/auth/login";
@@ -11,3 +12,5 @@ String viewQueueSingleUserUrl = "$baseUrlX/view-queue-user";
 String confirmQueueUserUrl = "$baseUrlX/confirm-queue-user";
 String skipQueueUserUrl = "$baseUrlX/skip-queue-user";
 String recallQueueUserUrl = "$baseUrlX/recall-queue-user";
+String getAssignmentToday = "$baseUrlX/assignment/";
+String deleteAssignmentToday = "$baseUrlX/assignment/";

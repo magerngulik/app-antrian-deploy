@@ -25,6 +25,9 @@ class MyApp extends StatelessWidget {
       case 5:
         mainScreen = const UserPickQueueView();
         break;
+      case 6:
+        mainScreen = const AdminHomeView();
+        break;
       default:
         mainScreen = Container();
         break;

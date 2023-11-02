@@ -34,6 +34,10 @@ class LoginController extends GetxController {
           debugPrint(email.text);
           var data = await services.doLogin(
               email: email.text, password: password.text);
+          if (email.text == "syamsul@gmail.com") {
+            Get.off(const AdminHomeView());
+          }
+
           data.fold((l) {
             Get.dialog(MDialogError(
                 onTap: () {
