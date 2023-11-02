@@ -29,6 +29,7 @@ class AdminChangeRoleController extends GetxController {
           message: "Error pada server: $l"));
     }, (r) {
       listRoles = r;
+      debugPrint("List role: ${listRoles.length}");
       update();
     });
   }
@@ -43,11 +44,19 @@ class AdminChangeRoleController extends GetxController {
             Get.dialog(MDialogError(
                 onTap: () {
                   Get.back();
+                  Get.back();
                 },
                 message: l));
           }, (r) {
             var message = r['message'];
-            Get.dialog(MDialogSuccess(onTap: () {}, message: message));
+            Get.dialog(MDialogSuccess(
+                onTap: () {
+                  Get.back();
+                  Get.back();
+                  getActiceRoleToday();
+                  update();
+                },
+                message: message));
           });
         },
         message: "apakah anda yakin ingin menghapus data ini?"));

@@ -13,4 +13,4 @@ String confirmQueueUserUrl = "$baseUrlX/confirm-queue-user";
 String skipQueueUserUrl = "$baseUrlX/skip-queue-user";
 String recallQueueUserUrl = "$baseUrlX/recall-queue-user";
 String getAssignmentToday = "$baseUrlX/assignment/";
-String deleteAssignmentToday = "$baseUrlX/assignment/";
+String deleteAssignmentToday = "$baseUrlX/assignment";

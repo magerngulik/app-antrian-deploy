@@ -1,0 +1,15 @@
+{
+    "modules": [
+        "antrian",
+        "login",
+        "costumer_pick_queue",
+        "user_pick_role",
+        "user_pick_queue",
+        "admin/dashboard"
+    ],
+    "module_directory_name": "module",
+    "experimental_mode": false,
+    "learning_mode": false,
+    "unfreezed": true,
+    "use_cubit": false
+}

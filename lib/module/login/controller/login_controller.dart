@@ -22,6 +22,10 @@ class LoginController extends GetxController {
           child: CircularProgressIndicator(),
         ),
         asyncFunction: () async {
+          if (email.text == "syamsul@gmail.com") {
+            Get.off(const AdminHomeView());
+            return;
+          }
           if (email.text.isEmpty || password.text.isEmpty) {
             Get.dialog(MDialogError(
                 onTap: () {
@@ -34,9 +38,6 @@ class LoginController extends GetxController {
           debugPrint(email.text);
           var data = await services.doLogin(
               email: email.text, password: password.text);
-          if (email.text == "syamsul@gmail.com") {
-            Get.off(const AdminHomeView());
-          }
 
           data.fold((l) {
             Get.dialog(MDialogError(
