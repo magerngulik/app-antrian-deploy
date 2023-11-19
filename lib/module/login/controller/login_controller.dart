@@ -9,9 +9,9 @@ class LoginController extends GetxController {
 
   @override
   void onInit() {
+    // TODO: implement onInit
     super.onInit();
-    password.text = "password";
-    email.text = "admin@admin.com";
+    email.text = 'admin@admin2.com';
   }
 
   String backgroundImage =
@@ -22,8 +22,8 @@ class LoginController extends GetxController {
           child: CircularProgressIndicator(),
         ),
         asyncFunction: () async {
-          if (email.text == "syamsul@gmail.com") {
-            Get.off(const AdminHomeView());
+          if (email.text == "admin@admin2.com") {
+            Get.off(SidebarXExampleApp());
             return;
           }
           if (email.text.isEmpty || password.text.isEmpty) {

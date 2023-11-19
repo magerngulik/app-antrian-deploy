@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const textColor = Color(0xff9A9EA4);
 // const backgroundColor = Color(0xffF4F8F9);
-const backgroundColor = Color(0xffFEFEFE);
+Color backgroundColor = Colors.blue.shade100;
 const secondaryBackgroundColor = Color(0xfff5f5f5);
 const darkColor = Color(0xff1A202C);
 const accentColor = Color(0xff0061F1);

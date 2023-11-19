@@ -1,4 +1,5 @@
 // ignore_for_file: camel_case_types
+import 'package:antrian_app/constants.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ProfileState extends State<Profile> {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xffF3F5F9),
+      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
@@ -49,7 +50,6 @@ class _ProfileState extends State<Profile> {
                 margin: const EdgeInsets.only(bottom: 12.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(124 / 2),
-                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
                         color: Colors.black.withOpacity(0.08),

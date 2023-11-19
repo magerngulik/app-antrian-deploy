@@ -84,20 +84,16 @@ class NavigationView extends StatelessWidget {
           },
         ),
         const SidebarXItem(
-          icon: Icons.people,
-          label: 'Antrian',
-        ),
-        const SidebarXItem(
-          icon: Icons.monitor,
-          label: 'Layar',
-        ),
-        const SidebarXItem(
           icon: Icons.settings,
           label: 'Konfigurasi',
         ),
         const SidebarXItem(
           icon: Icons.person,
           label: 'Manajemen User',
+        ),
+        const SidebarXItem(
+          icon: Icons.settings,
+          label: 'Report',
         ),
         const SidebarXItem(
           iconWidget: FlutterLogo(size: 20),

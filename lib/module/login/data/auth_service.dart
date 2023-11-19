@@ -1,3 +1,4 @@
+import 'package:antrian_app/main.dart';
 import 'package:antrian_app/shared/services/m_base_url.dart';
 
 import 'package:dartz/dartz.dart';
@@ -5,26 +6,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class AuthServices {
-  Future<Either<String, Map<String, dynamic>>> doLogin(
-      {required String email, required String password}) async {
+  doLogin({required String email, required String password}) async {
     debugPrint("email => $email");
     debugPrint("password => $password");
     try {
-      var response = await Dio().post(
-        loginUser,
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-          },
-        ),
-        data: {
-          "email": email,
-          "password": password,
-        },
-      );
-      Map<String, dynamic> obj = response.data;
-      debugPrint(obj.toString());
-      return Right(obj);
+      await supabase.auth.signInWithPassword(password: password, email: email);
     } on DioException catch (e) {
       if (e.response != null) {
         if (e.response!.statusCode == 401) {

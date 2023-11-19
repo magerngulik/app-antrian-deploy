@@ -22,12 +22,18 @@ class DashboardView extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.4,
+                    width: MediaQuery.sizeOf(context).width * 0.84,
                     child: Row(
                       children: [
                         Expanded(
                           child: Card(
                             child: Container(
+                              decoration: BoxDecoration(
+                                color: backgroundColor,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
                               width: MediaQuery.of(context).size.width,
                               padding: const EdgeInsets.all(20.0),
                               child: Row(
@@ -38,9 +44,9 @@ class DashboardView extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Counter",
+                                          "Teller",
                                           style: TextStyle(
-                                            fontSize: 24.0,
+                                            fontSize: 20.0,
                                           ),
                                         ),
                                         SizedBox(
@@ -83,6 +89,12 @@ class DashboardView extends StatelessWidget {
                         Expanded(
                           child: Card(
                             child: Container(
+                              decoration: BoxDecoration(
+                                color: backgroundColor,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
                               width: MediaQuery.of(context).size.width,
                               padding: const EdgeInsets.all(20.0),
                               child: Row(
@@ -93,9 +105,70 @@ class DashboardView extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Pengguna Aplikasi",
+                                          "Customer Service",
                                           style: TextStyle(
-                                            fontSize: 24.0,
+                                            fontSize: 20.0,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 6.0,
+                                        ),
+                                        Text(
+                                          "4",
+                                          style: TextStyle(
+                                            fontSize: 32.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10.0),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                          8.0,
+                                        ),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.person_2,
+                                      size: 48.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20.0,
+                        ),
+                        Expanded(
+                          child: Card(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: backgroundColor,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.all(20.0),
+                              child: Row(
+                                children: [
+                                  const Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Operator",
+                                          style: TextStyle(
+                                            fontSize: 20.0,
                                           ),
                                         ),
                                         SizedBox(
@@ -153,8 +226,9 @@ class DashboardView extends StatelessWidget {
                           child: Card(
                             child: Container(
                               padding: const EdgeInsets.all(20.0),
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
+                              decoration: BoxDecoration(
+                                color: backgroundColor,
+                                borderRadius: const BorderRadius.all(
                                   Radius.circular(
                                     8.0,
                                   ),
@@ -235,8 +309,9 @@ class DashboardView extends StatelessWidget {
                           child: Card(
                             child: Container(
                               padding: const EdgeInsets.all(20.0),
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
+                              decoration: BoxDecoration(
+                                color: backgroundColor,
+                                borderRadius: const BorderRadius.all(
                                   Radius.circular(
                                     8.0,
                                   ),

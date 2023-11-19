@@ -306,7 +306,7 @@ class MContainerLayar1 extends StatelessWidget {
                   controller.kodePelayanan,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 80.0,
+                    fontSize: 70.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

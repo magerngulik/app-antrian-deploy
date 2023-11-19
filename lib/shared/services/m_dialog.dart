@@ -18,7 +18,7 @@ class MDialogError extends StatelessWidget {
       ),
       content: SingleChildScrollView(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height / 3,
+          // height: MediaQuery.of(context).size.height / 3,
           width: MediaQuery.of(context).size.height / 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
