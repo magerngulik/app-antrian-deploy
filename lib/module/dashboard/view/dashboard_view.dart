@@ -38,23 +38,23 @@ class DashboardView extends StatelessWidget {
                               padding: const EdgeInsets.all(20.0),
                               child: Row(
                                 children: [
-                                  const Expanded(
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Teller",
                                           style: TextStyle(
                                             fontSize: 20.0,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 6.0,
                                         ),
                                         Text(
-                                          "4",
-                                          style: TextStyle(
+                                          " ${controller.totalUser?['teller_count'] ?? 0}",
+                                          style: const TextStyle(
                                             fontSize: 32.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -99,23 +99,23 @@ class DashboardView extends StatelessWidget {
                               padding: const EdgeInsets.all(20.0),
                               child: Row(
                                 children: [
-                                  const Expanded(
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Customer Service",
                                           style: TextStyle(
                                             fontSize: 20.0,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 6.0,
                                         ),
                                         Text(
-                                          "4",
-                                          style: TextStyle(
+                                          " ${controller.totalUser?['customer_service_count'] ?? 0}",
+                                          style: const TextStyle(
                                             fontSize: 32.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -160,23 +160,23 @@ class DashboardView extends StatelessWidget {
                               padding: const EdgeInsets.all(20.0),
                               child: Row(
                                 children: [
-                                  const Expanded(
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Operator",
                                           style: TextStyle(
                                             fontSize: 20.0,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 6.0,
                                         ),
                                         Text(
-                                          "4",
-                                          style: TextStyle(
+                                          " ${controller.totalUser?['total_operator'] ?? 0}",
+                                          style: const TextStyle(
                                             fontSize: 32.0,
                                             fontWeight: FontWeight.bold,
                                           ),
