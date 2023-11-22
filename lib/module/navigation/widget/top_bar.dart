@@ -70,11 +70,30 @@ class TopBar extends GetView<AppController> {
                 const SizedBox(
                   width: 12,
                 ),
-                const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.red,
+                PopupMenuButton(
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      const PopupMenuItem(
+                        child: ListTile(
+                          leading: Icon(Icons.person),
+                          title: Text('Syamsul Maarif'),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        child: ListTile(
+                          leading: Icon(Icons.logout_outlined),
+                          title: Text('LogOut'),
+                        ),
+                      ),
+                      // Tambahkan item menu lainnya sesuai kebutuhan
+                    ];
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.red,
+                    ),
                   ),
                 ),
               ],

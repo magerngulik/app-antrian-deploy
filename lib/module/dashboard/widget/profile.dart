@@ -58,12 +58,12 @@ class _ProfileState extends State<Profile> {
                         spreadRadius: 8)
                   ],
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: backgroundColor,
                     radius: 42.0,
-                    child: FlutterLogo(size: 40),
+                    child: const FlutterLogo(size: 40),
                   ),
                 ),
               ),

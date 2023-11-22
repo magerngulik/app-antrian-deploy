@@ -1,10 +1,12 @@
+import 'package:antrian_app/shared/services/supabase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../view/dashboard_view.dart';
 
 class DashboardController extends GetxController {
   DashboardView? view;
-
+  bool isLoading = false;
+  Map? totalUser;
   List<Map<String, dynamic>> listCounter = [
     {
       "no_counter": 1,
@@ -31,5 +33,24 @@ class DashboardController extends GetxController {
     } else {
       return Colors.red; // Lebih dari atau sama dengan 40, warna merah
     }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    getTotalUser();
+  }
+
+  getTotalUser() async {
+    isLoading = true;
+    try {
+      totalUser = await SupabaseSevice().getTotalUser();
+      isLoading = false;
+    } catch (e) {
+      print(e);
+      isLoading = false;
+    }
+    print(totalUser);
+    update();
   }
 }
