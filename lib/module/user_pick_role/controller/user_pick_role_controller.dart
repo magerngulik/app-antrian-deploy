@@ -1,9 +1,11 @@
 import 'package:antrian_app/core.dart';
-import 'package:antrian_app/module/user_pick_role/data/role_pick_services.dart';
+import 'package:antrian_app/main.dart';
+import 'package:antrian_app/shared/services/m_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserPickRoleController extends GetxController {
   UserPickRoleView? view;
@@ -23,19 +25,67 @@ class UserPickRoleController extends GetxController {
   void onInit() {
     super.onInit();
     loadRole();
-    getUser();
+    // getUser();
   }
 
   loadRole() async {
-    var data = await roleServices.getRoleUser();
-    data.fold((l) {
-      Get.back();
-    }, (r) {
-      dataRole = r;
-    });
-    log.d(dataRole);
-    update();
+    LoggerService.logInfo("data user");
+    try {
+      // var data = await RoleServices.getSupaAssignmentToday();
+      var data = await RoleServices.getSupaAssignmentToday();
+
+      List<int> roleUsersIds = data
+          .map((map) => map["role_users_id"])
+          .whereType<int>() // Hanya ambil yang bertipe int
+          .toList();
+
+      // List<int> roleUsersIds = List<int>.from(data['role_users_id']);
+
+      // LoggerService.logError("error", roleUsersIds);
+
+      // Mendapatkan data dari Supabase berdasarkan role_users_id yang diabaikan
+      final responseRole = await supabase
+          .from('role_users')
+          .select('*')
+          .not('id', 'in', roleUsersIds)
+          .order("created_at", ascending: true);
+
+      LoggerService.logInfo(roleUsersIds);
+      LoggerService.logInfo(data);
+      LoggerService.logWarning(responseRole);
+      dataRole = List<Map<String, dynamic>>.from(responseRole);
+      update();
+    } on PostgrestException catch (e) {
+      if (e.code == 'PGRST116') {
+        LoggerService.logInfo(' Data is empty');
+        try {
+          final responseRole = await supabase
+              .from('role_users')
+              .select('*')
+              .order("created_at", ascending: true);
+          dataRole = List<Map<String, dynamic>>.from(responseRole);
+          LoggerService.logInfo(responseRole);
+          update();
+        } catch (e) {
+          LoggerService.logError("Gagal mendapatkan data role", e);
+        }
+      } else {
+        Get.defaultDialog(title: "Error", middleText: "Terjadi Error: $e");
+        LoggerService.logError("error", e);
+      }
+    }
   }
+
+  // loadRole() async {
+  //   var data = await roleServices.getRoleUser();
+  //   data.fold((l) {
+  //     Get.back();
+  //   }, (r) {
+  //     dataRole = r;
+  //   });
+  //   log.d(dataRole);
+  //   update();
+  // }
 
   pickRole({required int index, required int selectedRoleData}) {
     selectedIndex = index;

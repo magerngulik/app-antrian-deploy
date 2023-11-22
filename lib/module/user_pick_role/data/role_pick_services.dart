@@ -1,3 +1,4 @@
+import 'package:antrian_app/main.dart';
 import 'package:antrian_app/shared/services/m_base_url.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -59,5 +60,23 @@ class RoleServices {
       }
       return Left(e.toString());
     }
+  }
+
+  static Future getSupaAssignmentToday() async {
+    DateTime now = DateTime.now();
+
+    // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
+    DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+    // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
+    DateTime endOfDay =
+        DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+
+    final data = await supabase
+        .from('assignments')
+        .select('id,role_users_id,user_id')
+        .gte('created_at', startOfDay.toUtc())
+        .lt('created_at', endOfDay.toUtc());
+    return data;
   }
 }

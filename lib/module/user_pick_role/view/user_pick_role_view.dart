@@ -1,3 +1,4 @@
+import 'package:antrian_app/shared/services/m_logger.dart';
 import 'package:flutter/material.dart';
 import '../controller/user_pick_role_controller.dart';
 import 'package:antrian_app/core.dart';
@@ -76,6 +77,7 @@ class UserPickRoleView extends StatelessWidget {
                         List.generate(controller.dataRole.length, (index) {
                       var warna = Colors.orangeAccent;
                       var data = controller.dataRole[index];
+
                       int id = data['id'];
                       return InkWell(
                         onTap: () {
@@ -98,7 +100,7 @@ class UserPickRoleView extends StatelessWidget {
                                   : const Border()),
                           child: Center(
                             child: Text(
-                              "${data['nama_role']}",
+                              "${data['name_role']}",
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 20.0,

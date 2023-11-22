@@ -1,6 +1,6 @@
-// String baseUrlX = "https://antrian.servicesimager.my.id/api";
+String baseUrlX = "https://antrian.servicesimager.my.id/api";
 // String baseUrlX = "http://antrean-app.test/api";
-String baseUrlX = "http://queue-app.test:90/api";
+// String baseUrlX = "http://queue-app.test:90/api";
 String costumerServices = "$baseUrlX/code-queue";
 String costumerPickQueue = "$baseUrlX/costumer-queue";
 String loginUser = "$baseUrlX/auth/login";
