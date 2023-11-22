@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:antrian_app/module/costumer_pick_queue/data/costumer_services.dart';
 import 'package:antrian_app/shared/services/m_dialog.dart';
 import 'package:antrian_app/shared/util/q_color.dart';
@@ -16,9 +18,16 @@ class CostumerPickQueueController extends GetxController {
   String backgroundImage =
       "https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
   final colorManager = ColorManager();
+  late DateTime currentTime;
+  late Timer timer;
+  late AnimationController controllerAnimate;
 
   int selectedService = 1;
   var isLoading = false.obs;
+
+  String getCurrentTime(DateTime time) {
+    return DateFormat('HH:mm:ss', "id_ID").format(time);
+  }
 
   getServices() async {
     var source = await servicesCostumer.getServices();
@@ -29,6 +38,9 @@ class CostumerPickQueueController extends GetxController {
       update();
     });
   }
+
+  String formattedDate =
+      DateFormat('EEEE, d MMMM yyyy', "id_ID").format(DateTime.now());
 
   void getTicketQueue(int index) async {
     // Tampilkan loading indicator
@@ -69,5 +81,18 @@ class CostumerPickQueueController extends GetxController {
   void onInit() {
     super.onInit();
     getServices();
+    currentTime = DateTime.now();
+    // Memulai timer yang memperbarui waktu setiap detik
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      currentTime = DateTime.now();
+      update();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Mematikan timer ketika widget dihancurkan
+    timer.cancel();
+    super.dispose();
   }
 }

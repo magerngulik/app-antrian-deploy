@@ -1,4 +1,6 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../controller/costumer_pick_queue_controller.dart';
 import 'package:antrian_app/core.dart';
 import 'package:get/get.dart';
@@ -28,22 +30,22 @@ class CostumerPickQueueView extends StatelessWidget {
               ),
             ),
             centerTitle: true,
-            actions: const [
+            actions: [
               FittedBox(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "01 Oktober 2023",
-                      style: TextStyle(
+                      controller.formattedDate,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "08:32",
-                      style: TextStyle(
+                      controller.getCurrentTime(controller.currentTime),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -51,7 +53,7 @@ class CostumerPickQueueView extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20.0,
               ),
             ],
@@ -64,20 +66,26 @@ class CostumerPickQueueView extends StatelessWidget {
               : Container(
                   height: MediaQuery.of(context).size.height / 12,
                   width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   decoration: const BoxDecoration(
                     color: Colors.purple,
                   ),
-                  child: FittedBox(
-                    child: Text(
-                      "Pelayanan ${controller.namaInstansi} akan di buka mulai dari ${controller.layananBuka} dan tutup pada ${controller.layananTutup}, Terimakasi atas kunjungan anda kami akan melayanin anda dengan sepenuh hati",
-                      maxLines: 2,
-                      style: const TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                  child: Positioned(
+                    right: 0,
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TyperAnimatedText(
+                          "Pelayanan ${controller.namaInstansi} akan dibuka mulai dari ${controller.layananBuka} dan ditutup pada ${controller.layananTutup}. Terimakasih atas kunjungan Anda, kami akan melayani Anda dengan sepenuh hati.",
+                          textStyle: const TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.right,
+                          speed: const Duration(milliseconds: 100),
+                        ),
+                      ],
+                      totalRepeatCount: 2,
+                      pause: const Duration(
+                          milliseconds: 1000), // Jeda sebelum mengulang
                     ),
                   ),
                 ),
