@@ -2,6 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesHelper {
+  static Future<void> saveSingleDataString(
+      {required String key, required String value}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint("data sebelum di simpan: \n key:$key, \n value: $value");
+    if (prefs.containsKey('token')) {
+      prefs.remove('token');
+      await prefs.setString(key, value);
+    }
+  }
+
+  static Future<void> saveSingleDataInt(
+      {required String key, required int value}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint("data sebelum di simpan: \n key:$key, \n value: $value");
+    if (prefs.containsKey('token')) {
+      prefs.remove('token');
+    }
+    await prefs.setInt(key, value);
+  }
+
   static Future<void> saveDataToSharedPreferences(
       Map<String, dynamic> data) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
