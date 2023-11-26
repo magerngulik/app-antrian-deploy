@@ -228,7 +228,7 @@ class LoginView extends StatelessWidget {
                 ),
                 Expanded(
                   child: CachedNetworkImage(
-                    imageUrl: controller.backgroundImage,
+                    imageUrl: media!['link'],
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(

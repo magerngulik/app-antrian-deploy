@@ -1,6 +1,8 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:marquee/marquee.dart';
+
 import '../controller/costumer_pick_queue_controller.dart';
 import 'package:antrian_app/core.dart';
 import 'package:get/get.dart';
@@ -69,26 +71,42 @@ class CostumerPickQueueView extends StatelessWidget {
                   decoration: const BoxDecoration(
                     color: Colors.purple,
                   ),
-                  child: Positioned(
-                    right: 0,
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        TyperAnimatedText(
-                          "Pelayanan ${controller.namaInstansi} akan dibuka mulai dari ${controller.layananBuka} dan ditutup pada ${controller.layananTutup}. Terimakasih atas kunjungan Anda, kami akan melayani Anda dengan sepenuh hati.",
-                          textStyle: const TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.right,
-                          speed: const Duration(milliseconds: 100),
-                        ),
-                      ],
-                      totalRepeatCount: 2,
-                      pause: const Duration(
-                          milliseconds: 1000), // Jeda sebelum mengulang
+                  child:
+
+                      // Positioned(
+                      //   right: 0,
+                      //   child: AnimatedTextKit(
+                      //     animatedTexts: [
+                      //       TyperAnimatedText(
+                      //         "Pelayanan ${controller.namaInstansi} akan dibuka mulai dari ${controller.layananBuka} dan ditutup pada ${controller.layananTutup}. Terimakasih atas kunjungan Anda, kami akan melayani Anda dengan sepenuh hati.",
+
+                      //         textAlign: TextAlign.right,
+                      //         speed: const Duration(milliseconds: 100),
+                      //       ),
+                      //     ],
+                      //     totalRepeatCount: 2,
+                      //     pause: const Duration(
+                      //         milliseconds: 1000), // Jeda sebelum mengulang
+                      //   ),
+                      // ),
+                      Marquee(
+                    text:
+                        "Pelayanan ${controller.namaInstansi} akan dibuka mulai dari ${controller.layananBuka} dan ditutup pada ${controller.layananTutup}. Terimakasih atas kunjungan Anda, kami akan melayani Anda dengan sepenuh hati.",
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
                     ),
-                  ),
-                ),
+                    scrollAxis: Axis.horizontal,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    blankSpace: 20.0,
+                    velocity: 100.0,
+                    pauseAfterRound: const Duration(seconds: 2),
+                    startPadding: 10.0,
+                    accelerationDuration: const Duration(seconds: 2),
+                    accelerationCurve: Curves.linear,
+                    decelerationDuration: const Duration(milliseconds: 500),
+                    decelerationCurve: Curves.easeOut,
+                  )),
           body: Responsive(
             desktop: isDesktopQueueCostumer(context, controller),
             tablet: isTabletQueueCostumer(context, controller),
@@ -112,7 +130,7 @@ class CostumerPickQueueView extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  controller.backgroundImage,
+                  media!['link'],
                 ),
                 fit: BoxFit.cover,
               ),
@@ -235,7 +253,7 @@ class CostumerPickQueueView extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  controller.backgroundImage,
+                  media!['link'],
                 ),
                 fit: BoxFit.cover,
               ),
@@ -359,7 +377,7 @@ class CostumerPickQueueView extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  controller.backgroundImage,
+                  media!['link'],
                 ),
                 fit: BoxFit.cover,
               ),

@@ -27,9 +27,7 @@ class LoginController extends GetxController {
   //         child: CircularProgressIndicator(),
   //       ),
   //       asyncFunction: () async {
-  //         if (email.text == "admin@admin2.com") {
-  //           Get.off(SidebarXExampleApp());
-  //           return;
+  //
   //         }
   //         if (email.text.isEmpty || password.text.isEmpty) {
   //           Get.dialog(MDialogError(
@@ -71,6 +69,10 @@ class LoginController extends GetxController {
     try {
       // final startOfDay = DateTime(2023, 11, 19, 0, 0, 0);
       // final endOfDay = DateTime(2023, 11, 19, 23, 59, 59, 999, 999);
+      if (email.text == "admin@admin2.com") {
+        Get.off(SidebarXExampleApp());
+        return;
+      }
 
       DateTime now = DateTime.now();
 
