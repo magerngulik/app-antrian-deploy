@@ -333,7 +333,7 @@ class AntrianView extends StatelessWidget {
                             children: [
                               Container(
                                 height:
-                                    MediaQuery.sizeOf(context).height * 0.46,
+                                    MediaQuery.sizeOf(context).height * 0.51,
                                 width: MediaQuery.sizeOf(context).width * 0.38,
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -361,15 +361,14 @@ class AntrianView extends StatelessWidget {
                                                 "Ambil Video",
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16),
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
                                               ),
                                             ),
                                             Container(
                                               padding: const EdgeInsets.all(10),
-                                              // height: 100.0,
-                                              // width: 100,
                                               decoration: const BoxDecoration(
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(12.0),
@@ -377,47 +376,51 @@ class AntrianView extends StatelessWidget {
                                               ),
                                               child: Stack(
                                                 children: [
-                                                  SizedBox(
-                                                    width: MediaQuery.sizeOf(
+                                                  Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.38,
+                                                    height: MediaQuery.of(
                                                                 context)
+                                                            .size
                                                             .width *
-                                                        0.38,
-                                                    height: MediaQuery.sizeOf(
-                                                                context)
-                                                            .height *
-                                                        0.34,
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              20),
-                                                      child: AspectRatio(
-                                                        aspectRatio: controller
-                                                            .controllerVideoUploud!
-                                                            .value
-                                                            .aspectRatio,
-                                                        child: Stack(
-                                                          alignment: Alignment
-                                                              .bottomCenter,
-                                                          children: <Widget>[
-                                                            VideoPlayer(controller
-                                                                .controllerVideoUploud!),
-                                                            ClosedCaption(
-                                                                text: controller
-                                                                    .controllerVideoUploud!
-                                                                    .value
-                                                                    .caption
-                                                                    .text),
-                                                            _ControlsOverlay(
-                                                                controller:
-                                                                    controller
-                                                                        .controllerVideoUploud!),
-                                                            VideoProgressIndicator(
-                                                                controller
-                                                                    .controllerVideoUploud!,
-                                                                allowScrubbing:
-                                                                    true),
-                                                          ],
-                                                        ),
+                                                        0.38 *
+                                                        9 /
+                                                        16, // Mengasumsikan rasio aspek 16:9
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: AspectRatio(
+                                                      aspectRatio: controller
+                                                          .controllerVideoUploud!
+                                                          .value
+                                                          .aspectRatio,
+                                                      child: Stack(
+                                                        alignment: Alignment
+                                                            .bottomCenter,
+                                                        children: <Widget>[
+                                                          VideoPlayer(controller
+                                                              .controllerVideoUploud!),
+                                                          ClosedCaption(
+                                                            text: controller
+                                                                .controllerVideoUploud!
+                                                                .value
+                                                                .caption
+                                                                .text,
+                                                          ),
+                                                          ControlsOverlay(
+                                                            controller: controller
+                                                                .controllerVideoUploud!,
+                                                          ),
+                                                          VideoProgressIndicator(
+                                                            controller
+                                                                .controllerVideoUploud!,
+                                                            allowScrubbing:
+                                                                true,
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
@@ -425,20 +428,21 @@ class AntrianView extends StatelessWidget {
                                                     bottom: 190,
                                                     left: 220,
                                                     child: IconButton(
-                                                        onPressed: () {
-                                                          controller
-                                                              .doDeleteVideo(
-                                                                  true);
-                                                        },
-                                                        icon: Icon(
-                                                          MdiIcons.closeCircle,
-                                                          color: Colors.red,
-                                                          size: 30.0,
-                                                        )),
-                                                  )
+                                                      onPressed: () {
+                                                        controller
+                                                            .doDeleteVideo(
+                                                                true);
+                                                      },
+                                                      icon: Icon(
+                                                        MdiIcons.closeCircle,
+                                                        color: Colors.red,
+                                                        size: 30.0,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
-                                            )
+                                            ),
                                           ],
                                         )
                                       : Center(
@@ -521,7 +525,7 @@ class AntrianView extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  controller.postImage();
+                                  controller.postVideo();
                                 },
                               ),
                             ],
@@ -530,7 +534,7 @@ class AntrianView extends StatelessWidget {
                             children: [
                               Container(
                                 height:
-                                    MediaQuery.sizeOf(context).height * 0.46,
+                                    MediaQuery.sizeOf(context).height * 0.51,
                                 width: MediaQuery.sizeOf(context).width * 0.38,
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -543,62 +547,85 @@ class AntrianView extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Center(
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 4.0),
-                                            child: const Text(
-                                              "Layar Antrian",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4.0),
+                                      child: const Text(
+                                        "Layar Antrian",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          // height: 100.0,
-                                          // width: 100,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(12.0),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0),
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.38,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.38 *
+                                                9 /
+                                                16, // Mengasumsikan rasio aspek 16:9
+                                            padding: const EdgeInsets.all(20),
+                                            child: AspectRatio(
+                                              aspectRatio: controller
+                                                  .controllerVideoSupabase!
+                                                  .value
+                                                  .aspectRatio,
+                                              child: Stack(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                children: <Widget>[
+                                                  VideoPlayer(controller
+                                                      .controllerVideoSupabase!),
+                                                  ClosedCaption(
+                                                    text: controller
+                                                        .controllerVideoSupabase!
+                                                        .value
+                                                        .caption
+                                                        .text,
+                                                  ),
+                                                  ControlsOverlay(
+                                                    controller: controller
+                                                        .controllerVideoSupabase!,
+                                                  ),
+                                                  VideoProgressIndicator(
+                                                    controller
+                                                        .controllerVideoSupabase!,
+                                                    allowScrubbing: true,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                          child: Stack(
-                                            children: [
-                                              // Image.file(
-                                              //     controller.capturedImage!),
-                                              Image.network(
-                                                media?['link'] ??
-                                                    "https://i.ibb.co/S32HNjD/no-image.jpg",
-                                                width:
-                                                    MediaQuery.sizeOf(context)
-                                                        .width,
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        0.34,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(
                                 height: 50.0,
                               ),
                             ],
-                          ),
+                          )
                         ],
                       ),
                     ],
@@ -617,8 +644,8 @@ class AntrianView extends StatelessWidget {
   }
 }
 
-class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({required this.controller});
+class ControlsOverlay extends StatelessWidget {
+  const ControlsOverlay({super.key, required this.controller});
 
   static const List<Duration> _exampleCaptionOffsets = <Duration>[
     Duration(seconds: -10),
@@ -670,64 +697,64 @@ class _ControlsOverlay extends StatelessWidget {
             controller.value.isPlaying ? controller.pause() : controller.play();
           },
         ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: PopupMenuButton<Duration>(
-            initialValue: controller.value.captionOffset,
-            tooltip: 'Caption Offset',
-            onSelected: (Duration delay) {
-              controller.setCaptionOffset(delay);
-            },
-            itemBuilder: (BuildContext context) {
-              return <PopupMenuItem<Duration>>[
-                for (final Duration offsetDuration in _exampleCaptionOffsets)
-                  PopupMenuItem<Duration>(
-                    value: offsetDuration,
-                    child: Text('${offsetDuration.inMilliseconds}ms'),
-                  )
-              ];
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                // Using less vertical padding as the text is also longer
-                // horizontally, so it feels like it would need more spacing
-                // horizontally (matching the aspect ratio of the video).
-                vertical: 12,
-                horizontal: 16,
-              ),
-              child: Text('${controller.value.captionOffset.inMilliseconds}ms'),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: PopupMenuButton<double>(
-            initialValue: controller.value.playbackSpeed,
-            tooltip: 'Playback speed',
-            onSelected: (double speed) {
-              controller.setPlaybackSpeed(speed);
-            },
-            itemBuilder: (BuildContext context) {
-              return <PopupMenuItem<double>>[
-                for (final double speed in _examplePlaybackRates)
-                  PopupMenuItem<double>(
-                    value: speed,
-                    child: Text('${speed}x'),
-                  )
-              ];
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                // Using less vertical padding as the text is also longer
-                // horizontally, so it feels like it would need more spacing
-                // horizontally (matching the aspect ratio of the video).
-                vertical: 12,
-                horizontal: 16,
-              ),
-              child: Text('${controller.value.playbackSpeed}x'),
-            ),
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.topLeft,
+        //   child: PopupMenuButton<Duration>(
+        //     initialValue: controller.value.captionOffset,
+        //     tooltip: 'Caption Offset',
+        //     onSelected: (Duration delay) {
+        //       controller.setCaptionOffset(delay);
+        //     },
+        //     itemBuilder: (BuildContext context) {
+        //       return <PopupMenuItem<Duration>>[
+        //         for (final Duration offsetDuration in _exampleCaptionOffsets)
+        //           PopupMenuItem<Duration>(
+        //             value: offsetDuration,
+        //             child: Text('${offsetDuration.inMilliseconds}ms'),
+        //           )
+        //       ];
+        //     },
+        //     child: Padding(
+        //       padding: const EdgeInsets.symmetric(
+        //         // Using less vertical padding as the text is also longer
+        //         // horizontally, so it feels like it would need more spacing
+        //         // horizontally (matching the aspect ratio of the video).
+        //         vertical: 12,
+        //         horizontal: 16,
+        //       ),
+        //       child: Text('${controller.value.captionOffset.inMilliseconds}ms'),
+        //     ),
+        //   ),
+        // ),
+        // Align(
+        //   alignment: Alignment.topRight,
+        //   child: PopupMenuButton<double>(
+        //     initialValue: controller.value.playbackSpeed,
+        //     tooltip: 'Playback speed',
+        //     onSelected: (double speed) {
+        //       controller.setPlaybackSpeed(speed);
+        //     },
+        //     itemBuilder: (BuildContext context) {
+        //       return <PopupMenuItem<double>>[
+        //         for (final double speed in _examplePlaybackRates)
+        //           PopupMenuItem<double>(
+        //             value: speed,
+        //             child: Text('${speed}x'),
+        //           )
+        //       ];
+        //     },
+        //     child: Padding(
+        //       padding: const EdgeInsets.symmetric(
+        //         // Using less vertical padding as the text is also longer
+        //         // horizontally, so it feels like it would need more spacing
+        //         // horizontally (matching the aspect ratio of the video).
+        //         vertical: 12,
+        //         horizontal: 16,
+        //       ),
+        //       child: Text('${controller.value.playbackSpeed}x'),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

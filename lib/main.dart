@@ -17,6 +17,7 @@ void main() async {
     anonKey: supabaseAnonKey,
   );
   media = await SupabaseSevice().getMedia();
+  mediaVideo = await SupabaseSevice().getMediaVideo();
   VideoPlayerMediaKit.ensureInitialized(
     android:
         true, // default: false    -    dependency: media_kit_libs_android_video

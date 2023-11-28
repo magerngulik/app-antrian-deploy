@@ -21,6 +21,7 @@ class AntrianController extends GetxController {
   File? capturedImage;
   VideoPlayerController? controllerVideoUploud;
   VideoPlayerController? _toBeDisposed;
+  VideoPlayerController? controllerVideoSupabase;
   File? captureVideo;
   XFile? videoUploud;
   String? attachementVideo;
@@ -69,6 +70,9 @@ class AntrianController extends GetxController {
     if (isDelete) {
       captureVideo = null;
       attachement = '';
+      videoPath.value = '';
+      _disposeVideoController();
+      _toBeDisposed!.dispose();
     } else {
       videoPath.value = '';
     }
@@ -87,6 +91,30 @@ class AntrianController extends GetxController {
     final response = await supabase.storage
         .from('configuration')
         .upload(filePath, capturedImage!);
+
+    if (response.isEmpty) {
+      return null;
+    }
+
+    final urlImage =
+        supabase.storage.from('configuration').getPublicUrl(filePath);
+    final filename = urlImage;
+
+    return filename;
+  }
+
+  Future<String?> uploudVideo() async {
+    if (videoUploud == null) {
+      return null;
+    }
+    var uuid = const Uuid();
+    captureVideo = File(videoUploud!.path);
+    final fileExt = videoUploud!.path.split('.').last;
+    final fileName = '${uuid.v4()}$fileExt';
+    final filePath = 'video/$fileName';
+    final response = await supabase.storage
+        .from('configuration')
+        .upload(filePath, captureVideo!);
 
     if (response.isEmpty) {
       return null;
@@ -124,9 +152,50 @@ class AntrianController extends GetxController {
     }
   }
 
+  postVideo() async {
+    Get.dialog(const LoadingScreen(), barrierDismissible: false);
+
+    try {
+      final videoNew = await uploudVideo();
+      await supabase.from('configuration').insert({
+        "type_configuration": 'video',
+        "link": videoNew,
+      });
+      Get.dialog(const AlertDialogNotif(
+          title: 'Uploud Succes', srcImages: 'assets/images/notif_succes.png'));
+      await Future.delayed(const Duration(seconds: 2));
+      Get.back(closeOverlays: true);
+      await doDeleteVideo(true);
+      await getMediaVideo();
+      controllerVideoSupabase = VideoPlayerController.networkUrl(
+        Uri.parse(mediaVideo!['link']),
+        // closedCaptionFile: _loadCaptions(),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
+
+      controllerVideoSupabase!.addListener(() {
+        update();
+      });
+      controllerVideoSupabase!.setLooping(true);
+      controllerVideoSupabase!.initialize();
+    } catch (e) {
+      print('errornya$e');
+
+      Get.dialog(const AlertDialogNotif(
+          title: 'Uploud Failed', srcImages: 'assets/images/notif_failed.png'));
+      await Future.delayed(const Duration(seconds: 2));
+      Get.back(closeOverlays: true);
+    }
+  }
+
   getMedia() async {
     media = await SupabaseSevice().getMedia();
 
+    update();
+  }
+
+  getMediaVideo() async {
+    mediaVideo = await SupabaseSevice().getMediaVideo();
     update();
   }
 
@@ -134,20 +203,17 @@ class AntrianController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    // controllerVideoUploud =
-    //     VideoPlayerController.file(File(captureVideo!.path));
-    // controllerVideoUploud = VideoPlayerController.networkUrl(
-    //   Uri.parse(
-    //       'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
-    //   // closedCaptionFile: _loadCaptions(),
-    //   videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-    // );
+    controllerVideoSupabase = VideoPlayerController.networkUrl(
+      Uri.parse(mediaVideo!['link']),
+      // closedCaptionFile: _loadCaptions(),
+      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+    );
 
-    // controllerVideoUploud!.addListener(() {
-    //   update();
-    // });
-    // controllerVideoUploud!.setLooping(true);
-    // controllerVideoUploud!.initialize();
+    controllerVideoSupabase!.addListener(() {
+      update();
+    });
+    controllerVideoSupabase!.setLooping(true);
+    controllerVideoSupabase!.initialize();
   }
 
   Future<void> _disposeVideoController() async {
@@ -187,7 +253,21 @@ class AntrianController extends GetxController {
 
   @override
   void dispose() {
-    controllerVideoUploud!.dispose();
     super.dispose();
+    doDeleteVideo(true);
+    controllerVideoSupabase!.dispose();
+    controllerVideoUploud!.dispose();
+    _toBeDisposed!.dispose();
+    _disposeVideoController();
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+    doDeleteVideo(true);
+    controllerVideoUploud!.dispose();
+    _toBeDisposed!.dispose();
+    _disposeVideoController();
   }
 }

@@ -23,4 +23,20 @@ class SupabaseSevice {
       return null;
     }
   }
+
+  Future getMediaVideo() async {
+    try {
+      final response = await supabase
+          .from('configuration')
+          .select('*')
+          .eq('type_configuration', 'video')
+          .order('updated_at', ascending: false)
+          .limit(1)
+          .single();
+
+      return response;
+    } catch (e) {
+      return null;
+    }
+  }
 }

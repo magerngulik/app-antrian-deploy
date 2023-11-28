@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../view/layar_view.dart';
 
@@ -16,11 +17,24 @@ class LayarController extends GetxController {
     super.onInit();
     getDataOnce();
     startDataFetching();
+    controllerVideoSupabase = VideoPlayerController.networkUrl(
+      formatHint: VideoFormat.hls,
+      Uri.parse(mediaVideo!['link']),
+      // closedCaptionFile: _loadCaptions(),
+      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+    );
+
+    controllerVideoSupabase!.addListener(() {
+      update();
+    });
+    controllerVideoSupabase!.setLooping(true);
+    controllerVideoSupabase!.initialize();
   }
 
   @override
   void onClose() {
     super.onClose();
+    controllerVideoSupabase!.dispose();
     stopDataFetching();
   }
 
@@ -31,6 +45,7 @@ class LayarController extends GetxController {
   String createdAt = "";
   String updatedAt = "";
   Timer? dataTimer;
+  VideoPlayerController? controllerVideoSupabase;
 
   void startDataFetching() {
     const Duration duration = Duration(seconds: 15);
