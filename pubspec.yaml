@@ -42,6 +42,25 @@ dependencies:
   sidebarx: ^0.16.2
   youtube_player_flutter: ^8.1.2
   supabase_flutter: ^1.10.25
+  material_design_icons_flutter: ^7.0.7296
+  flutter_animate: ^4.3.0
+  animated_text_kit: ^4.2.2
+  marquee: ^2.2.3
+  google_fonts: ^6.1.0
+  path_provider: ^2.1.1
+  image_picker: ^1.0.4
+  uuid: ^4.2.1
+  video_player: ^2.8.1
+  video_player_media_kit: ^1.0.5
+
+  # NOTE:
+  # It is not necessary to select all.
+  # Select based on your usage:
+  media_kit_libs_android_video: any
+  media_kit_libs_ios_video: any
+  media_kit_libs_macos_video: any
+  media_kit_libs_windows_video: any
+  media_kit_libs_linux: any
 
 dev_dependencies:
   flutter_lints: ^2.0.0

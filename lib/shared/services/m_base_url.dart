@@ -17,3 +17,5 @@ String deleteAssignmentToday = "$baseUrlX/assignment";
 String supabaseUrl = 'https://pyosfrtvbyktxrvduvek.supabase.co';
 String supabaseAnonKey =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5b3NmcnR2YnlrdHhydmR1dmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAzMTU0NTcsImV4cCI6MjAxNTg5MTQ1N30.WpM4fyxs7RvyuexxkdupsqakpBCRunRkC7XYHYhMHT4';
+Map? media;
+Map? mediaVideo;

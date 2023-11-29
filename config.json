@@ -1,12 +1,6 @@
 {
     "modules": [
-        "antrian",
-        "login",
-        "costumer_pick_queue",
-        "user_pick_role",
-        "user_pick_queue",
-        "admin_home",
-        "admin_change_role"
+        "form_create_user"
     ],
     "module_directory_name": "module",
     "experimental_mode": false,

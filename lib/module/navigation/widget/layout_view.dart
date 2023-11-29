@@ -22,6 +22,8 @@ class ScreensExample extends StatelessWidget {
             return const DashboardView();
           case 1:
             return const AntrianView();
+          case 2:
+            return const FormCreateUserView();
           default:
             return Text(
               pageTitle,

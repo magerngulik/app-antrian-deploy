@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'package:antrian_app/core.dart';
@@ -314,8 +315,11 @@ class MContainerLayar1 extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(
+          width: 240.0,
+        ),
         Expanded(
-          flex: 3,
+          flex: 2,
           child: Container(
             margin:
                 const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
@@ -326,21 +330,28 @@ class MContainerLayar1 extends StatelessWidget {
                 color: Colors.grey[350]!,
               ),
               borderRadius: const BorderRadius.all(
-                Radius.circular(
-                  50.0,
-                ),
+                Radius.circular(50.0),
               ),
             ),
-            child: Center(
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(12.0),
+            child: AspectRatio(
+              aspectRatio:
+                  controller.controllerVideoSupabase!.value.aspectRatio,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: <Widget>[
+                  VideoPlayer(controller.controllerVideoSupabase!),
+                  ClosedCaption(
+                    text:
+                        controller.controllerVideoSupabase!.value.caption.text,
                   ),
-                ),
-                child: Container(
-                  color: Colors.white,
-                ),
+                  ControlsOverlay(
+                    controller: controller.controllerVideoSupabase!,
+                  ),
+                  VideoProgressIndicator(
+                    controller.controllerVideoSupabase!,
+                    allowScrubbing: true,
+                  ),
+                ],
               ),
             ),
           ),

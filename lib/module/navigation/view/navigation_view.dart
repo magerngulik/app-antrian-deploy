@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 import 'package:antrian_app/core.dart';
@@ -91,8 +92,8 @@ class NavigationView extends StatelessWidget {
           icon: Icons.person,
           label: 'Manajemen User',
         ),
-        const SidebarXItem(
-          icon: Icons.settings,
+        SidebarXItem(
+          icon: MdiIcons.fileDocumentOutline,
           label: 'Report',
         ),
         const SidebarXItem(
