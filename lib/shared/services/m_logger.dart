@@ -14,4 +14,12 @@ class LoggerService {
   static void logWarning(dynamic message) {
     _logger.w(message);
   }
+
+  static void logF(dynamic message) {
+    _logger.f(message);
+  }
+
+  static void logD(dynamic message) {
+    _logger.d(message);
+  }
 }

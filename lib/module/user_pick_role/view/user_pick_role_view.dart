@@ -20,9 +20,8 @@ class UserPickRoleView extends StatelessWidget {
             backgroundColor: Colors.purple,
             title: const Text(
               "Role User",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
             centerTitle: true,
             actions: const [],
@@ -42,6 +41,7 @@ class UserPickRoleView extends StatelessWidget {
                   "Lanjutkan",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                     fontSize: 20.0,
                   ),
                 ),
