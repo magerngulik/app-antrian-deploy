@@ -12,6 +12,28 @@ class SharedPreferencesHelper {
     }
   }
 
+  static Future<String?> getSingleDataString({required String key}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint("Mengambil data dengan key: $key");
+
+    if (prefs.containsKey(key)) {
+      return prefs.getString(key);
+    } else {
+      return null; // Return null if the key is not found
+    }
+  }
+
+  static Future<int?> getSingleDataInt({required String key}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint("Mengambil data dengan key: $key");
+
+    if (prefs.containsKey(key)) {
+      return prefs.getInt(key);
+    } else {
+      return null; // Return null if the key is not found
+    }
+  }
+
   static Future<void> saveSingleDataInt(
       {required String key, required int value}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

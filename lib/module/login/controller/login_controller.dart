@@ -14,9 +14,10 @@ class LoginController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    email.text = 'admin@admin2.com';
+    email.text = 'admin@admin.com';
+    // password.text = "123456789";
+    password.text = "password";
   }
 
   String backgroundImage =
@@ -69,14 +70,20 @@ class LoginController extends GetxController {
     try {
       // final startOfDay = DateTime(2023, 11, 19, 0, 0, 0);
       // final endOfDay = DateTime(2023, 11, 19, 23, 59, 59, 999, 999);
-      if (email.text == "admin@admin2.com") {
-        await supabase.auth.signInWithPassword(
-          password: password.text,
-          email: email.text,
-        );
-        Get.off(SidebarXExampleApp());
-        return;
-      }
+      // if (email.text == "admin@admin2.com") {
+      //   await supabase.auth.signInWithPassword(
+      //     password: password.text,
+      //     email: email.text,
+      //   );
+      //   Get.off(SidebarXExampleApp());
+      //   return;
+      // }else{
+      // }
+
+      await supabase.auth.signInWithPassword(
+        password: password.text,
+        email: email.text,
+      );
 
       DateTime now = DateTime.now();
 
@@ -87,35 +94,46 @@ class LoginController extends GetxController {
       DateTime endOfDay =
           DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
 
+      if (supabase.auth.currentUser == null) {
+        Get.dialog(const AlertDialogNotif(
+            title: "Anda belum login silahkan login terlebih dahulu",
+            srcImages: 'assets/images/notif_failed.png'));
+        return;
+      }
+
       final data = await supabase
           .from('assignments')
           .select('id,role_users_id,user_id')
           .gte('created_at', startOfDay.toUtc())
           .lt('created_at', endOfDay.toUtc())
-          .eq('user_id', uuid)
+          .eq('user_id', supabase.auth.currentUser!.id)
           .single();
 
       if ((data is List && data.isEmpty)) {
-        LoggerService.logInfo(' Data is empty');
+        Ql.logInfo(' Data is empty');
         Get.off(const UserPickRoleView());
       } else {
-        LoggerService.logInfo(data);
+        Ql.logInfo(data);
         // Get.off(const UserPickQueueView());
         String keyValue = "assignment_id";
         int dataVaue = data['id'];
         await SharedPreferencesHelper.saveSingleDataInt(
             key: keyValue, value: dataVaue);
+
+        await SharedPreferencesHelper.saveSingleDataInt(
+            key: "role_user_id", value: data['role_users_id']);
         // Lakukan sesuatu dengan data yang ditemukan
+        Get.off(const UserPickQueueView());
       }
 
       // LoggerService.logInfo(data);
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST116') {
-        LoggerService.logInfo(' Data is empty');
+        Ql.logInfo(' Data is empty');
         Get.off(const UserPickRoleView());
       } else {
         Get.defaultDialog(title: "Error", middleText: "Terjadi Error: $e");
-        LoggerService.logError("error", e);
+        Ql.logError("error", e);
       }
     }
   }

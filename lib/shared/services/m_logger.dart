@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
 
-class LoggerService {
+class Ql {
   static final Logger _logger = Logger();
 
   static void logInfo(dynamic message) {

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:antrian_app/core.dart';
+import 'package:antrian_app/main.dart';
 import 'package:antrian_app/module/costumer_pick_queue/data/costumer_services.dart';
 import 'package:antrian_app/shared/services/m_dialog.dart';
 import 'package:antrian_app/shared/util/q_color.dart';
@@ -30,14 +32,33 @@ class CostumerPickQueueController extends GetxController {
   }
 
   getServices() async {
-    var source = await servicesCostumer.getServices();
-    source.fold((l) {
-      Get.snackbar("Opps", "Error: $l", duration: const Duration(seconds: 3));
-    }, (r) {
-      data = r['data'];
-      update();
-    });
+    await Future.delayed(const Duration(seconds: 1));
+    Get.showOverlay(
+        asyncFunction: () async {
+          try {
+            final dataGet = await supabase.from('code_queues').select('*');
+            Ql.logInfo(data);
+            data = dataGet;
+          } catch (e) {
+            Get.dialog(MDialogError(
+                onTap: () {
+                  Get.back();
+                },
+                message: "Gagal ketika ingin mendapatkan data $e"));
+          }
+        },
+        loadingWidget: const LoadingScreen());
   }
+
+  // getServices() async {
+  //   var source = await servicesCostumer.getServices();
+  //   source.fold((l) {
+  //     Get.snackbar("Opps", "Error: $l", duration: const Duration(seconds: 3));
+  //   }, (r) {
+  //     data = r['data'];
+  //     update();
+  //   });
+  // }
 
   String formattedDate =
       DateFormat('EEEE, d MMMM yyyy', "id_ID").format(DateTime.now());

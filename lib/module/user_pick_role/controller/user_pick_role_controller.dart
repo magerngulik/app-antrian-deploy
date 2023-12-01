@@ -19,17 +19,17 @@ class UserPickRoleController extends GetxController {
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 1100;
   Map<String, dynamic> userData = {};
-  int idUser = 0;
+  String? idUser;
 
   @override
   void onInit() {
     super.onInit();
     loadRole();
-    // getUser();
+    getUser();
   }
 
   loadRole() async {
-    LoggerService.logInfo("data user");
+    Ql.logInfo("data user");
     try {
       // var data = await RoleServices.getSupaAssignmentToday();
       var data = await RoleServices.getSupaAssignmentToday();
@@ -50,28 +50,28 @@ class UserPickRoleController extends GetxController {
           .not('id', 'in', roleUsersIds)
           .order("created_at", ascending: true);
 
-      LoggerService.logInfo(roleUsersIds);
-      LoggerService.logInfo(data);
-      LoggerService.logWarning(responseRole);
+      Ql.logInfo(roleUsersIds);
+      Ql.logInfo(data);
+      Ql.logWarning(responseRole);
       dataRole = List<Map<String, dynamic>>.from(responseRole);
       update();
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST116') {
-        LoggerService.logInfo(' Data is empty');
+        Ql.logInfo(' Data is empty');
         try {
           final responseRole = await supabase
               .from('role_users')
               .select('*')
               .order("created_at", ascending: true);
           dataRole = List<Map<String, dynamic>>.from(responseRole);
-          LoggerService.logInfo(responseRole);
+          Ql.logInfo(responseRole);
           update();
         } catch (e) {
-          LoggerService.logError("Gagal mendapatkan data role", e);
+          Ql.logError("Gagal mendapatkan data role", e);
         }
       } else {
         Get.defaultDialog(title: "Error", middleText: "Terjadi Error: $e");
-        LoggerService.logError("error", e);
+        Ql.logError("error", e);
       }
     }
   }
@@ -101,61 +101,87 @@ class UserPickRoleController extends GetxController {
           },
           message: "Pilih role terlebih dahulu"));
       return;
-    }
+    } else {}
+  }
+
+  doGetAssignment() {
+    Get.showOverlay(
+      loadingWidget: const LoadingScreen(),
+      asyncFunction: () async {
+        try {
+          Map dataUpload = {"user_id": idUser, "role_users_id": selectedRole};
+          await supabase.from('assignments').insert(dataUpload);
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+                Get.off(const LoginView());
+              },
+              message:
+                  "role berhasil di pilih, silakah login kembali untuk mereset"));
+        } catch (e) {
+          log.e("error ketika get assignment: $e");
+        }
+      },
+    );
   }
 
   getUser() async {
-    userData = await SharedPreferencesHelper.fetchDataFromSharedPreferences();
-    idUser = userData['user']['id'];
-  }
-
-  userUpdate(
-      {required int idAssignment,
-      required String layanan,
-      required String unit}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('user_assignment', idAssignment);
-    await prefs.setString('user_layanan', layanan);
-    await prefs.setString('user_unit', unit);
-  }
-
-  postRole() async {
-    if (selectedRole == null) {
-      Get.dialog(MDialogError(
-          onTap: () {
-            Get.back();
-          },
-          message: "Pilih role terlebih dahulu"));
-      return;
-    } else if (idUser == 0) {
-      Get.dialog(MDialogError(
-          onTap: () {
-            Get.off(const LoginView());
-          },
-          message: "Pilih role terlebih dahulu"));
+    // userData = await SharedPreferencesHelper.fetchDataFromSharedPreferences();
+    // idUser = userData['user']['id'];
+    if (supabase.auth.currentUser == null) {
+      Get.off(const LoginView());
+    } else {
+      idUser = supabase.auth.currentUser!.id;
     }
-
-    Get.showOverlay(
-        asyncFunction: () async {
-          var data = await roleServices.pickRole(
-              idUser: idUser, roleUser: selectedRole!);
-          data.fold((l) {
-            Get.dialog(MDialogError(
-                onTap: () {
-                  Get.back();
-                },
-                message: "error: $l"));
-          }, (r) {
-            log.d(r);
-            userUpdate(
-                idAssignment: r['assignment']['id'],
-                layanan: r['assignment']['layanan'],
-                unit: r['assignment']['unit']);
-            Get.off(const UserPickQueueView());
-          });
-        },
-        loadingWidget: const Center(
-          child: CircularProgressIndicator(),
-        ));
   }
+
+  // userUpdate(
+  //     {required int idAssignment,
+  //     required String layanan,
+  //     required String unit}) async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setInt('user_assignment', idAssignment);
+  //   await prefs.setString('user_layanan', layanan);
+  //   await prefs.setString('user_unit', unit);
+  // }
+
+  // postRole() async {
+  //   if (selectedRole == null) {
+  //     Get.dialog(MDialogError(
+  //         onTap: () {
+  //           Get.back();
+  //         },
+  //         message: "Pilih role terlebih dahulu"));
+  //     return;
+  //   } else if (idUser == 0) {
+  //     Get.dialog(MDialogError(
+  //         onTap: () {
+  //           Get.off(const LoginView());
+  //         },
+  //         message: "Pilih role terlebih dahulu"));
+  //   }
+
+  //   Get.showOverlay(
+  //       asyncFunction: () async {
+  //         var data = await roleServices.pickRole(
+  //             idUser: idUser, roleUser: selectedRole!);
+  //         data.fold((l) {
+  //           Get.dialog(MDialogError(
+  //               onTap: () {
+  //                 Get.back();
+  //               },
+  //               message: "error: $l"));
+  //         }, (r) {
+  //           log.d(r);
+  //           userUpdate(
+  //               idAssignment: r['assignment']['id'],
+  //               layanan: r['assignment']['layanan'],
+  //               unit: r['assignment']['unit']);
+  //           Get.off(const UserPickQueueView());
+  //         });
+  //       },
+  //       loadingWidget: const Center(
+  //         child: CircularProgressIndicator(),
+  //       ));
+  // }
 }
