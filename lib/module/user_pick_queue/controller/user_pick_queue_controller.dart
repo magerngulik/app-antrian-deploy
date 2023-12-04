@@ -31,25 +31,68 @@ class UserPickQueueController extends GetxController {
   Map<String, dynamic> dataRole = {};
   var log = Logger();
 
+  //variable data untuk select ke queue tabel
+  var codeId = 0; // untuk get code_id
+  var codeQueueId = 0; //untuk get code_queue_id
+
   @override
   void onInit() {
     super.onInit();
     getUser();
+    getCurrentQueue();
   }
 
   pickQueue() async {
-    var data = await services.pickQueue(assignmentId);
-    data.fold((l) {
-      Get.dialog(MDialogError(
-          onTap: () {
-            Get.back();
-          },
-          message: l));
-    }, (r) {
-      dataRole = r;
-      getCurrentQueue();
-      debugPrint("Data Role =$data");
-    });
+    String pickQueueCoondisition = 'waiting';
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('code_id', codeQueueId)
+          .eq('status', pickQueueCoondisition)
+          .limit(1)
+          .order('created_at', ascending: true);
+      // Ql.logWarning(data);
+
+      if (data.isEmpty) {
+        Ql.logD("kondisi berjalan");
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "Belum ada antrian yang tersedia"));
+        return;
+      } else {
+        // Get.dialog(MDialogSuccess(
+        //     onTap: () {
+        //       Get.back();
+        //     },
+        //     message: "Data antrian tersedia"));
+        Ql.logWarning(data[0]);
+        var sourceQueue = data[0];
+        var idQueueData = sourceQueue['id'];
+        try {
+          Map dataChange = {
+            "assignments_id": assignmentId,
+            "status": "process"
+          };
+
+          await supabase
+              .from('queues')
+              .update(dataChange)
+              .match({'id': idQueueData});
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+              },
+              message: "Berhasil Call Antrian"));
+        } catch (e) {
+          Ql.logError("error ketika ingin mengupdate queue", e);
+        }
+      }
+    } catch (e) {
+      Ql.logError('error ketika get ready assignment', e);
+    }
   }
 
   doLogout() async {
@@ -65,49 +108,56 @@ class UserPickQueueController extends GetxController {
   }
 
   getCurrentQueue() async {
-    var data = await services.viewQueue(assignmentId);
-    data.fold((l) {
-      Get.dialog(MDialogError(
-          onTap: () {
-            Get.back();
-          },
-          message: "error : $l"));
-      update();
-    }, (r) {
-      var source = r['data'];
-      var queue = source['queue'];
-      var waitingCount = source['last_queue'];
-      debugPrint("queue: $queue");
-      debugPrint("waiting queue = $waitingCount");
-      if (queue == null) {
+    await Future.delayed(const Duration(seconds: 1));
+    Ql.logError("data assignmen", assignmentId);
+    try {
+      final dataCurentAssignment = await supabase
+          .from('queues')
+          .select('*')
+          .eq('status', 'process')
+          .eq('assignments_id', assignmentId)
+          .limit(1);
+
+      Ql.logWarning("$dataCurentAssignment $assignmentId");
+      if (dataCurentAssignment.isEmpty) {
+        Ql.logD("data is empty bro");
         currentQueue = "-";
       } else {
-        var waitingCode = queue['kode'];
-        currentQueue = waitingCode;
+        Ql.logD(dataCurentAssignment);
+        currentQueue = dataCurentAssignment[0]['kode'];
       }
-      waitingQueue = waitingCount;
-      update();
-    });
+    } catch (e) {
+      Ql.logError("error ketika get current queue", e);
+    }
+    update();
   }
+
+  // var data = await services.viewQueue(assignmentId);
+  // data.fold((l) {
+  //   Get.dialog(MDialogError(
+  //       onTap: () {
+  //         Get.back();
+  //       },
+  //       message: "error : $l"));
+  //   update();
+  // }, (r) {
+  //   var source = r['data'];
+  //   var queue = source['queue'];
+  //   var waitingCount = source['last_queue'];
+  //   debugPrint("queue: $queue");
+  //   debugPrint("waiting queue = $waitingCount");
+  //   if (queue == null) {
+  //     currentQueue = "-";
+  //   } else {
+  //     var waitingCode = queue['kode'];
+  //     currentQueue = waitingCode;
+  //   }
+  //   waitingQueue = waitingCount;
+  //   update();
+  // });
 
 //get user yang sedang login
   getUser() async {
-    // userData = await SharedPreferencesHelper.fetchDataFromSharedPreferences();
-    // idUser = userData['user']['id'];
-    // name = userData['user']['name'];
-    // email = userData['user']['email'];
-    // assignmentId = userData['user']['assignment'];
-    // token = userData['token'];
-    // layanan = userData['user']['user_layanan'];
-    // unit = userData['user']['user_unit'];
-    // update();
-    // getCurrentQueue();
-    // debugPrint("---------------");
-    // debugPrint("name:$name");
-    // debugPrint("name:$email");
-    // debugPrint("name:$assignmentId");
-    // debugPrint("---------------");
-
     if (supabase.auth.currentUser == null) {
       Get.off(const LoginView());
     } else {
@@ -129,6 +179,31 @@ class UserPickQueueController extends GetxController {
         "role user id ": roleUserId,
         "user id": supabase.auth.currentUser!.id
       });
+    }
+    //code untuk role user
+    try {
+      final dataRoleUser = await supabase
+          .from('role_users')
+          .select('*')
+          .eq('id', roleUserId)
+          .limit(1);
+      codeId = dataRoleUser[0]['code_id'];
+      Ql.logD(codeId);
+    } catch (e) {
+      Ql.logError("error ketika get role user", "$e");
+    }
+
+    try {
+      final dataCodeQueue = await supabase
+          .from('code_queues')
+          .select('*')
+          .eq('id', codeId)
+          .limit(1);
+
+      codeQueueId = dataCodeQueue[0]['id'];
+      Ql.logWarning(codeQueueId);
+    } catch (e) {
+      Ql.logError("error ketika get queue user", "$e");
     }
   }
 

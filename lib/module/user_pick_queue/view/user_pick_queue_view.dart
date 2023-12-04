@@ -95,15 +95,15 @@ class UserPickQueueView extends StatelessWidget {
                 },
                 titleFunction2: "RECALL",
                 ontapFunction2: () {
-                  controller.recallQueue();
+                  controller.getCurrentQueue();
                 },
                 titleFunction3: "CONFIRM",
                 ontapFunction3: () {
-                  controller.confirmQueue();
+                  // controller.confirmQueue();
                 },
                 titleFunction4: "SKIP",
                 ontapFunction4: () {
-                  controller.skipQueue();
+                  // controller.skipQueue();
                 },
               )),
         ],
@@ -142,15 +142,16 @@ class UserPickQueueView extends StatelessWidget {
                 },
                 titleFunction2: "RECALL",
                 ontapFunction2: () {
-                  controller.recallQueue();
+                  // controller.recallQueue();
+                  controller.getCurrentQueue();
                 },
                 titleFunction3: "CONFIRM",
                 ontapFunction3: () {
-                  controller.confirmQueue();
+                  // controller.confirmQueue();
                 },
                 titleFunction4: "SKIP",
                 ontapFunction4: () {
-                  controller.skipQueue();
+                  // controller.skipQueue();
                 },
               )),
         ],

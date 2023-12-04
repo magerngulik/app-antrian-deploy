@@ -1,6 +1,5 @@
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/main.dart';
-import 'package:antrian_app/shared/services/m_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -107,7 +106,7 @@ class LoginController extends GetxController {
           .gte('created_at', startOfDay.toUtc())
           .lt('created_at', endOfDay.toUtc())
           .eq('user_id', supabase.auth.currentUser!.id)
-          .single();
+          .limit(1);
 
       if ((data is List && data.isEmpty)) {
         Ql.logInfo(' Data is empty');
@@ -116,12 +115,12 @@ class LoginController extends GetxController {
         Ql.logInfo(data);
         // Get.off(const UserPickQueueView());
         String keyValue = "assignment_id";
-        int dataVaue = data['id'];
+        int dataVaue = data[0]['id'];
         await SharedPreferencesHelper.saveSingleDataInt(
             key: keyValue, value: dataVaue);
 
         await SharedPreferencesHelper.saveSingleDataInt(
-            key: "role_user_id", value: data['role_users_id']);
+            key: "role_user_id", value: data[0]['role_users_id']);
         // Lakukan sesuatu dengan data yang ditemukan
         Get.off(const UserPickQueueView());
       }

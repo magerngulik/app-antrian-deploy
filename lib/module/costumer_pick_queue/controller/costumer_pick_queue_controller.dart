@@ -26,6 +26,7 @@ class CostumerPickQueueController extends GetxController {
 
   int selectedService = 1;
   var isLoading = false.obs;
+  var newCode = "";
 
   String getCurrentTime(DateTime time) {
     return DateFormat('HH:mm:ss', "id_ID").format(time);
@@ -62,6 +63,88 @@ class CostumerPickQueueController extends GetxController {
 
   String formattedDate =
       DateFormat('EEEE, d MMMM yyyy', "id_ID").format(DateTime.now());
+
+  getTicketQueueSupabase(int id) async {
+    debugPrint(id.toString());
+    String codeQueue = "";
+    try {
+      final dataCodeQueue =
+          await supabase.from('code_queues').select('*').eq('id', id).single();
+      codeQueue = dataCodeQueue['queue_code'];
+      Ql.logInfo(dataCodeQueue);
+    } catch (e) {
+      debugPrint(e.toString());
+      return;
+    }
+
+    DateTime today = DateTime.now();
+    try {
+      final dataQueue = await supabase
+          .from('queues')
+          .select('*')
+          .lte('created_at', today.toUtc())
+          .like('kode', "%$codeQueue%")
+          .order('created_at', ascending: false)
+          .limit(1);
+
+      if (dataQueue.isNotEmpty) {
+        // Data tidak kosong, Anda dapat mengakses data menggunakan dataQueue.data
+        var dataLastQueue = dataQueue[0];
+
+        var kode = dataLastQueue['kode'];
+        String lastChar = kode.substring(1);
+        int result = int.parse(lastChar) + 1;
+        String formattedResult = "";
+
+        if (result < 10) {
+          formattedResult = '00$result';
+        } else if (result < 100) {
+          formattedResult = '0$result';
+        } else {
+          formattedResult = result.toString();
+        }
+        newCode = "$codeQueue$formattedResult";
+
+        Map dataUpload = {"kode": newCode, "status": "waiting"};
+        await supabase.from('queues').insert(dataUpload);
+
+        Ql.logD(newCode);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+        String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+        Get.dialog(MDialogTicket(
+          kode: newCode,
+          tanggal: formattedDate,
+          waktu: formattedTime,
+          onTap: () {
+            Get.back();
+          },
+        ));
+      } else {
+        // Data kosong
+        debugPrint('Tidak ada data yang memenuhi kriteria.');
+        newCode = "${codeQueue}001";
+        Map dataUpload = {"kode": newCode, "status": "waiting"};
+        await supabase.from('queues').insert(dataUpload);
+
+        newCode = "";
+        String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+        String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+        Get.dialog(MDialogTicket(
+          kode: newCode,
+          tanggal: formattedDate,
+          waktu: formattedTime,
+          onTap: () {
+            Get.back();
+          },
+        ));
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+   
+  }
 
   void getTicketQueue(int index) async {
     // Tampilkan loading indicator

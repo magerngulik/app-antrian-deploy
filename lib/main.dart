@@ -44,7 +44,10 @@ void main() async {
                 color: Colors.white,
                 fontSize: 46,
                 fontWeight: FontWeight.w800,
+
               ),
+              
+             
             ),
           ),
           home: const MyApp(),
