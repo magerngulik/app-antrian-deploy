@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:antrian_app/core.dart';
+import 'package:antrian_app/main.dart';
 import 'package:antrian_app/module/layar/data/costumer_layar_services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,8 @@ class LayarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getDataOnce();
-    startDataFetching();
+    // getDataOnce();
+    // startDataFetching();
     controllerVideoSupabase = VideoPlayerController.networkUrl(
       formatHint: VideoFormat.hls,
       Uri.parse(mediaVideo!['link']),
@@ -29,6 +30,8 @@ class LayarController extends GetxController {
     });
     controllerVideoSupabase!.setLooping(true);
     controllerVideoSupabase!.initialize();
+    testingGet();
+    getLastDataQueue();
   }
 
   @override
@@ -37,6 +40,77 @@ class LayarController extends GetxController {
     controllerVideoSupabase!.dispose();
     stopDataFetching();
   }
+
+  getLastDataQueue() async {
+    try {
+      final currentTimestamp = DateTime.now();
+      final startOfDay = DateTime(
+          currentTimestamp.year, currentTimestamp.month, currentTimestamp.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('status', 'process')
+          .gte('created_at', startOfDay.toIso8601String())
+          .lte('created_at', endOfDay.toIso8601String())
+          .order('created_at', ascending: true);
+      Ql.logD(data);
+      var kode = data[0]['kode'];
+      loket = kode;
+      update();
+    } catch (e) {}
+  }
+
+  //mulai dari sini
+  void testingGet() async {
+    try {
+      final currentTimestamp = DateTime.now();
+      final startOfDay = DateTime(
+          currentTimestamp.year, currentTimestamp.month, currentTimestamp.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      final dataQueue = await supabase
+          .from('queues')
+          .select('*')
+          .eq('status', 'process')
+          .gte('created_at', startOfDay.toIso8601String())
+          .lte('created_at', endOfDay.toIso8601String());
+
+      if (dataQueue.isEmpty) {
+        Ql.logD("data antrian kosong");
+      }
+
+      Ql.logWarning(dataQueue);
+    } catch (e) {
+      Ql.logError("Terjadi error ketika get queue hari ini", e);
+    }
+
+    try {
+      final dataRole = await supabase.from('role_users').select('*');
+      Ql.logWarning(dataRole);
+    } catch (e) {
+      Ql.logError("Terjadi error ketika get role users hari ini", e);
+    }
+
+    try {
+      final currentTimestamp = DateTime.now();
+      final startOfDay = DateTime(
+          currentTimestamp.year, currentTimestamp.month, currentTimestamp.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      final dataAssignment = await supabase
+          .from('assignments')
+          .select('*')
+          .gte('created_at', startOfDay.toIso8601String())
+          .lte('created_at', endOfDay.toIso8601String());
+      Ql.logWarning(dataAssignment);
+    } catch (e) {
+      Ql.logError("Terjadi error ketika get assignment hari ini", e);
+    }
+  }
+
+  // berakhir di sini
 
   var services = CostumerLayarServices();
   List<Map<String, dynamic>> dataList = [];

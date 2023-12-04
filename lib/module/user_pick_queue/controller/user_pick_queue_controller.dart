@@ -40,9 +40,46 @@ class UserPickQueueController extends GetxController {
     super.onInit();
     getUser();
     getCurrentQueue();
+    getCountQueue();
+  }
+
+  Future<bool?> isProcess() async {
+    String kondisiProcess = 'process';
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('status', kondisiProcess)
+          .eq('assignments_id', assignmentId)
+          .limit(1)
+          .order('created_at', ascending: true);
+      if (data.isEmpty) {
+        Ql.logWarning(data);
+        return true;
+      } else {
+        // Ql.logWarning("Kondisi ke dua");
+        Ql.logD(data);
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "Selekai Terlebih dahulu proses yang sedang berlangsung"));
+        return false;
+      }
+    } catch (e) {
+      Ql.logError("error to pass condisiton first", e);
+      return null;
+    }
   }
 
   pickQueue() async {
+    // Ql.logInfo(assignmentId);
+    bool onProsess = await isProcess() ?? false;
+
+    if (onProsess == false) {
+      return;
+    }
+
     String pickQueueCoondisition = 'waiting';
     try {
       final data = await supabase
@@ -59,15 +96,13 @@ class UserPickQueueController extends GetxController {
         Get.dialog(MDialogError(
             onTap: () {
               Get.back();
+              getCurrentQueue();
+              getCountQueue();
             },
             message: "Belum ada antrian yang tersedia"));
+
         return;
       } else {
-        // Get.dialog(MDialogSuccess(
-        //     onTap: () {
-        //       Get.back();
-        //     },
-        //     message: "Data antrian tersedia"));
         Ql.logWarning(data[0]);
         var sourceQueue = data[0];
         var idQueueData = sourceQueue['id'];
@@ -93,18 +128,8 @@ class UserPickQueueController extends GetxController {
     } catch (e) {
       Ql.logError('error ketika get ready assignment', e);
     }
-  }
-
-  doLogout() async {
-    try {
-      await supabase.auth.signOut();
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-    } catch (e) {
-      Get.dialog(const AlertDialogNotif(
-          title: "Anda gagal logout",
-          srcImages: "assets/images/notif_failed.png"));
-    }
+    getCurrentQueue();
+    getCountQueue();
   }
 
   getCurrentQueue() async {
@@ -132,29 +157,27 @@ class UserPickQueueController extends GetxController {
     update();
   }
 
-  // var data = await services.viewQueue(assignmentId);
-  // data.fold((l) {
-  //   Get.dialog(MDialogError(
-  //       onTap: () {
-  //         Get.back();
-  //       },
-  //       message: "error : $l"));
-  //   update();
-  // }, (r) {
-  //   var source = r['data'];
-  //   var queue = source['queue'];
-  //   var waitingCount = source['last_queue'];
-  //   debugPrint("queue: $queue");
-  //   debugPrint("waiting queue = $waitingCount");
-  //   if (queue == null) {
-  //     currentQueue = "-";
-  //   } else {
-  //     var waitingCode = queue['kode'];
-  //     currentQueue = waitingCode;
-  //   }
-  //   waitingQueue = waitingCount;
-  //   update();
-  // });
+  //untuk mendapatkan antrian di belakang
+  void getCountQueue() async {
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('status', 'waiting')
+          .eq('code_id', codeId);
+      Ql.logF(data);
+      // Ql.logF("panjang data ${data.length}");
+      if (data.isEmpty) {
+        waitingQueue = 0;
+      } else {
+        waitingQueue = data.length;
+      }
+      update();
+    } catch (e) {
+      Ql.logError("error ketika ingin mendapatkan jumlaho data", e);
+    }
+  }
 
 //get user yang sedang login
   getUser() async {
@@ -209,66 +232,286 @@ class UserPickQueueController extends GetxController {
 
   //menyudahi sessi pelayanan, merubah status dari queue costumer menjadi complete
   confirmQueue() async {
-    var data = await services.confirmQueue(assignmentId);
-    debugPrint("assignment id = $assignmentId");
-    data.fold((l) {
+    debugPrint("confirm colect");
+    var confirmCondition = "process";
+    // var confirmCondition = "complete";
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('assignments_id', assignmentId)
+          .eq('status', confirmCondition)
+          .limit(1)
+          .order('created_at', ascending: true);
+
+      if (data.isEmpty) {
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "TIdak ada data yang di layani"));
+      } else {
+        // Ql.logWarning(data);
+        Ql.logInfo("status jalan");
+        var currentData = data[0];
+        Ql.logWarning(currentData);
+        var confirmCurrentId = currentData['id'];
+
+        try {
+          Map dataChange = {"status": 'complete'};
+
+          await supabase
+              .from('queues')
+              .update(dataChange)
+              .match({'id': confirmCurrentId});
+
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+                getCurrentQueue();
+                getCountQueue();
+              },
+              message: "Berhasil untuk menyelesaikan transaksi"));
+        } catch (e) {
+          Get.dialog(MDialogError(
+              onTap: () {
+                getCurrentQueue();
+                getCountQueue();
+              },
+              message:
+                  "Terjadi kesalahan ketika inggin update data di confirm : $e"));
+        }
+      }
+    } catch (e) {
       Get.dialog(MDialogError(
           onTap: () {
-            Get.back();
-          },
-          message: l));
-    }, (r) {
-      var message = r['message'];
-      Get.dialog(MDialogSuccess(
-          onTap: () {
             getCurrentQueue();
-            Get.back();
+            getCountQueue();
           },
-          message: message));
-      getCurrentQueue();
-    });
+          message: "Terjadi error ketika mendapatkan current data : $e"));
+      return;
+    }
   }
 
   //menyudahi sessi pelayanan, merubah status dari queue costumer menjadi complete
   skipQueue() async {
-    var data = await services.skipQueue(assignmentId);
-    debugPrint("assignment id = $assignmentId");
-    data.fold((l) {
+    debugPrint("confirm colect");
+    var confirmCondition = "process";
+    // var confirmCondition = "complete";
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('assignments_id', assignmentId)
+          .eq('status', confirmCondition)
+          .limit(1)
+          .order('created_at', ascending: true);
+
+      if (data.isEmpty) {
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "TIdak ada data yang di layani"));
+      } else {
+        // Ql.logWarning(data);
+        Ql.logInfo("status jalan");
+        var currentData = data[0];
+        Ql.logWarning(currentData);
+        var confirmCurrentId = currentData['id'];
+
+        try {
+          Map dataChange = {"status": 'skip'};
+
+          await supabase
+              .from('queues')
+              .update(dataChange)
+              .match({'id': confirmCurrentId});
+
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+                getCurrentQueue();
+                getCountQueue();
+              },
+              message: "Berhasil untuk skip transaksi"));
+        } catch (e) {
+          Get.dialog(MDialogError(
+              onTap: () {
+                getCurrentQueue();
+                getCountQueue();
+              },
+              message:
+                  "Terjadi kesalahan ketika inggin update data di skip : $e"));
+        }
+      }
+    } catch (e) {
       Get.dialog(MDialogError(
           onTap: () {
-            Get.back();
-          },
-          message: l));
-    }, (r) {
-      var message = r['message'];
-      Get.dialog(MDialogSuccess(
-          onTap: () {
             getCurrentQueue();
-            Get.back();
+            getCountQueue();
           },
-          message: message));
-      getCurrentQueue();
-    });
+          message: "Terjadi error ketika mendapatkan current data : $e"));
+      return;
+    }
   }
 
   recallQueue() async {
-    var data = await services.recallQueue(assignmentId);
-    debugPrint("assignment id = $assignmentId");
-    data.fold((l) {
+    debugPrint("confirm colect");
+    var confirmCondition = "process";
+    // var confirmCondition = "complete";
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('assignments_id', assignmentId)
+          .eq('status', confirmCondition)
+          .limit(1)
+          .order('created_at', ascending: true);
+
+      if (data.isEmpty) {
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "TIdak ada data yang di layani"));
+      } else {
+        // Ql.logWarning(data);
+        Ql.logInfo("status jalan");
+        var currentData = data[0];
+        Ql.logWarning(currentData);
+        var confirmCurrentId = currentData['id'];
+
+        final currentTimestamp = DateTime.now();
+        final formattedTimestamp = currentTimestamp.toIso8601String();
+
+        try {
+          Map dataChange = {"updated_at": formattedTimestamp};
+
+          await supabase
+              .from('queues')
+              .update(dataChange)
+              .match({'id': confirmCurrentId});
+
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+                getCurrentQueue();
+                getCountQueue();
+              },
+              message: "Berhasil untuk recall transaksi"));
+        } catch (e) {
+          Get.dialog(MDialogError(
+              onTap: () {
+                Get.back();
+                getCurrentQueue();
+                getCountQueue();
+                Ql.logError("error ketika recall", e);
+              },
+              message:
+                  "Terjadi kesalahan ketika inggin update data di recall : $e"));
+        }
+      }
+    } catch (e) {
       Get.dialog(MDialogError(
           onTap: () {
             Get.back();
-          },
-          message: l));
-    }, (r) {
-      var message = r['message'];
-      Get.dialog(MDialogSuccess(
-          onTap: () {
             getCurrentQueue();
-            Get.back();
+            getCountQueue();
           },
-          message: message));
-      getCurrentQueue();
-    });
+          message: "Terjadi error ketika mendapatkan current data : $e"));
+      return;
+    }
   }
+
+  doLogout() async {
+    try {
+      await supabase.auth.signOut();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+    } catch (e) {
+      Get.dialog(const AlertDialogNotif(
+          title: "Anda gagal logout",
+          srcImages: "assets/images/notif_failed.png"));
+    }
+  }
+
+  // var data = await services.skipQueue(assignmentId);
+  // debugPrint("assignment id = $assignmentId");
+  // data.fold((l) {
+  //   Get.dialog(MDialogError(
+  //       onTap: () {
+  //         Get.back();
+  //       },
+  //       message: l));
+  // }, (r) {
+  //   var message = r['message'];
+  //   Get.dialog(MDialogSuccess(
+  //       onTap: () {
+  //         getCurrentQueue();
+  //         Get.back();
+  //       },
+  //       message: message));
+  //   getCurrentQueue();
+  // });
+
+  // var data = await services.viewQueue(assignmentId);
+  // data.fold((l) {
+  //   Get.dialog(MDialogError(
+  //       onTap: () {
+  //         Get.back();
+  //       },
+  //       message: "error : $l"));
+  //   update();
+  // }, (r) {
+  //   var source = r['data'];
+  //   var queue = source['queue'];
+  //   var waitingCount = source['last_queue'];
+  //   debugPrint("queue: $queue");
+  //   debugPrint("waiting queue = $waitingCount");
+  //   if (queue == null) {
+  //     currentQueue = "-";
+  //   } else {
+  //     var waitingCode = queue['kode'];
+  //     currentQueue = waitingCode;
+  //   }
+  //   waitingQueue = waitingCount;
+  //   update();
+  // });
+  // var data = await services.confirmQueue(assignmentId);
+  // debugPrint("assignment id = $assignmentId");
+  // data.fold((l) {
+  //   Get.dialog(MDialogError(
+  //       onTap: () {
+  //         Get.back();
+  //       },
+  //       message: l));
+  // }, (r) {
+  //   var message = r['message'];
+  //   Get.dialog(MDialogSuccess(
+  //       onTap: () {
+  //         getCurrentQueue();
+  //         Get.back();
+  //       },
+  //       message: message));
+  //   getCurrentQueue();
+  // });
+  // var data = await services.recallQueue(assignmentId);
+  // debugPrint("assignment id = $assignmentId");
+  // data.fold((l) {
+  //   Get.dialog(MDialogError(
+  //       onTap: () {
+  //         Get.back();
+  //       },
+  //       message: l));
+  // }, (r) {
+  //   var message = r['message'];
+  //   Get.dialog(MDialogSuccess(
+  //       onTap: () {
+  //         getCurrentQueue();
+  //         Get.back();
+  //       },
+  //       message: message));
+  //   getCurrentQueue();
+  // });
 }

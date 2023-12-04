@@ -105,7 +105,7 @@ class CostumerPickQueueController extends GetxController {
         }
         newCode = "$codeQueue$formattedResult";
 
-        Map dataUpload = {"kode": newCode, "status": "waiting"};
+        Map dataUpload = {"kode": newCode, "status": "waiting", "code_id": id};
         await supabase.from('queues').insert(dataUpload);
 
         Ql.logD(newCode);
@@ -143,7 +143,6 @@ class CostumerPickQueueController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     }
-   
   }
 
   void getTicketQueue(int index) async {
