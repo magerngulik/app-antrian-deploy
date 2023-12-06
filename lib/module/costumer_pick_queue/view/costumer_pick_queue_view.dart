@@ -443,7 +443,8 @@ class CostumerPickQueueView extends StatelessWidget {
                         return InkWell(
                           onTap: () {
                             // print("id: ${item['id']}");
-                            controller.getTicketQueue(item['id']);
+                            // controller.getTicketQueue(item['id']);
+                            controller.getTicketQueueSupabase(item['id']);
                           },
                           child: Container(
                             height: Get.height / jumlah,

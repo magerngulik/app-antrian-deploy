@@ -1,6 +1,6 @@
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/main.dart';
-import 'package:antrian_app/shared/services/m_logger.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,9 +14,11 @@ class LoginController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    email.text = 'admin@admin2.com';
+    // email.text = 'admin@admin2.com';
+    email.text = 'admin@admin.com';
+    // password.text = "123456789";
+    password.text = "password";
   }
 
   String backgroundImage =
@@ -76,44 +78,46 @@ class LoginController extends GetxController {
         );
         Get.off(SidebarXExampleApp());
         return;
-      } else {
-        DateTime now = DateTime.now();
+      }
 
-        // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
-        DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      DateTime now = DateTime.now();
 
-        // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
-        DateTime endOfDay =
-            DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+      // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
+      DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
 
-        final data = await supabase
-            .from('assignments')
-            .select('id,role_users_id,user_id')
-            .gte('created_at', startOfDay.toUtc())
-            .lt('created_at', endOfDay.toUtc())
-            .eq('user_id', uuid)
-            .single();
+      // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
+      DateTime endOfDay =
+          DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
 
-        if ((data is List && data.isEmpty)) {
-          LoggerService.logInfo(' Data is empty');
-          Get.off(const UserPickRoleView());
-        } else {
-          LoggerService.logInfo(data);
-          // Get.off(const UserPickQueueView());
-          String keyValue = "assignment_id";
-          int dataVaue = data['id'];
-          await SharedPreferencesHelper.saveSingleDataInt(
-              key: keyValue, value: dataVaue);
-          // Lakukan sesuatu dengan data yang ditemukan
-        }
-      } // LoggerService.logInfo(data);
-    } on PostgrestException catch (e) {
-      if (e.code == 'PGRST116') {
+      final data = await supabase
+          .from('assignments')
+          .select('id,role_users_id,user_id')
+          .gte('created_at', startOfDay.toUtc())
+          .lt('created_at', endOfDay.toUtc())
+          .eq('user_id', uuid)
+          .single();
+
+      if ((data is List && data.isEmpty)) {
         LoggerService.logInfo(' Data is empty');
         Get.off(const UserPickRoleView());
       } else {
+        LoggerService.logInfo(data);
+        // Get.off(const UserPickQueueView());
+        String keyValue = "assignment_id";
+        int dataVaue = data['id'];
+        await SharedPreferencesHelper.saveSingleDataInt(
+            key: keyValue, value: dataVaue);
+        // Lakukan sesuatu dengan data yang ditemukan
+      }
+
+      // LoggerService.logInfo(data);
+    } on PostgrestException catch (e) {
+      if (e.code == 'PGRST116') {
+        Ql.logI(' Data is empty');
+        Get.off(const UserPickRoleView());
+      } else {
         Get.defaultDialog(title: "Error", middleText: "Terjadi Error: $e");
-        LoggerService.logError("error", e);
+        Ql.logE("error", e);
       }
     }
   }

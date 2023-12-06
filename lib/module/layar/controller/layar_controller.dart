@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:antrian_app/core.dart';
+import 'package:antrian_app/main.dart';
 import 'package:antrian_app/module/layar/data/costumer_layar_services.dart';
+import 'package:antrian_app/module/layar/widget/last_data_model.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dartz/dartz_unsafe.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +32,8 @@ class LayarController extends GetxController {
     });
     controllerVideoSupabase!.setLooping(true);
     controllerVideoSupabase!.initialize();
+    // getDataCurrent();
+    // getLastDataQueue();
   }
 
   @override
@@ -36,6 +41,63 @@ class LayarController extends GetxController {
     super.onClose();
     controllerVideoSupabase!.dispose();
     stopDataFetching();
+  }
+
+  getLastDataQueue() async {
+    try {
+      final currentTimestamp = DateTime.now();
+      final startOfDay = DateTime(
+          currentTimestamp.year, currentTimestamp.month, currentTimestamp.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      final data = await supabase
+          .from('queues')
+          .select('*,assignments(*,role_users(*,code_queues(*)))')
+          .eq('status', 'process')
+          // .gte('created_at', startOfDay.toIso8601String())
+          // .lte('created_at', endOfDay.toIso8601String())
+          .order('created_at', ascending: true);
+      Ql.logF(data);
+      var dataQueue = DataModel.fromJson(data[0]);
+      Map existQueue = {};
+      if (data.isEmpty) {
+        existQueue = {
+          "kode": "-",
+          "status": "-",
+          "nama_role": "-",
+          "created_at": "-",
+          "updated_at": "-"
+        };
+      } else {
+        existQueue = {
+          "kode": dataQueue.kode,
+          "status": dataQueue.status,
+          "nama_role": dataQueue.assignments.roleUsers.nameRole,
+          "created_at": dataQueue.createdAt,
+          "updated_at": dataQueue.updatedAt
+        };
+        var kode = dataQueue.kode;
+        loket = existQueue['nama_role'];
+        kodePelayanan = kode;
+        Ql.logFatal(existQueue);
+
+        mVoiceCall(
+            kode: dataQueue.kode,
+            timeCreated: dataQueue.createdAt,
+            timeUpdate: dataQueue.updatedAt,
+            loket: existQueue['nama_role']);
+
+        debugPrint("created qqq${dataQueue.createdAt}");
+
+        saveTemporaryData(
+            kode: dataQueue.kode,
+            timeCreated: dataQueue.createdAt,
+            timeUpdate: dataQueue.updatedAt);
+      }
+      update();
+    } catch (e) {
+      Ql.logFatal(e);
+    }
   }
 
   var services = CostumerLayarServices();
@@ -47,10 +109,149 @@ class LayarController extends GetxController {
   Timer? dataTimer;
   VideoPlayerController? controllerVideoSupabase;
 
+  // variable supabase
+  var currentQueue = [];
+  var currentRole = [];
+  var currentAssigment = [];
+
+  //var queue last data
+
+  //mulai dari sini
+  void getDataCurrent() async {
+    try {
+      final currentTimestamp = DateTime.now();
+      final startOfDay = DateTime(
+          currentTimestamp.year, currentTimestamp.month, currentTimestamp.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      final dataQueue = await supabase
+          .from('queues')
+          .select('*')
+          .eq('status', 'process')
+          .gte('created_at', startOfDay.toIso8601String())
+          .lte('created_at', endOfDay.toIso8601String())
+          .limit(20);
+
+      if (dataQueue.isEmpty) {
+        Ql.logD("data antrian kosong");
+      } else {
+        currentQueue = dataQueue;
+      }
+
+      Ql.logW(dataQueue);
+    } catch (e) {
+      Ql.logE("Terjadi error ketika get queue hari ini", e);
+    }
+
+    try {
+      final dataRole = await supabase.from('role_users').select('*');
+      if (dataRole.isEmpty) {
+        Ql.logD("data antrian kosong");
+      } else {
+        currentRole = dataRole;
+      }
+      Ql.logI(currentRole);
+    } catch (e) {
+      Ql.logE("Terjadi error ketika get role users hari ini", e);
+    }
+
+    try {
+      final currentTimestamp = DateTime.now();
+      final startOfDay = DateTime(currentTimestamp.year, currentTimestamp.month,
+          currentTimestamp.day, 0, 0, 0);
+      final endOfDay = DateTime(currentTimestamp.year, currentTimestamp.month,
+          currentTimestamp.day, 23, 59, 59);
+
+      final dataAssignment = await supabase
+          .from('assignments')
+          .select('*')
+          .gte('created_at', startOfDay.toIso8601String())
+          .lte('created_at', endOfDay.toIso8601String());
+      Ql.logW(dataAssignment);
+      if (dataAssignment.isEmpty) {
+        Ql.logD("data antrian kosong");
+      } else {
+        currentAssigment = dataAssignment;
+      }
+    } catch (e) {
+      Ql.logE("Terjadi error ketika get assignment hari ini", e);
+      return;
+    }
+
+    List<Map<String, dynamic>> result = [];
+    // List<Map<String, dynamic>> resultCurrent = currentAssigment;
+    List<Map<String, dynamic>> resultCurrent = [];
+
+    for (var item in currentAssigment) {
+      if (item is Map<String, dynamic>) {
+        resultCurrent.add(item);
+      } else {
+        resultCurrent.add({'value': item});
+      }
+    }
+
+    for (var r in currentRole) {
+      var assignmentData = resultCurrent.firstWhereOrNull((element) {
+        return element['role_users_id'] == r['id'];
+      });
+      Ql.logI(assignmentData);
+      // Ql.logF(assignmentData);
+      Map tempAssignment = assignmentData ?? {};
+      String? tempUserId = tempAssignment['user_id'];
+      int? assignmentId = tempAssignment['id'];
+      int? codeId = r['code_id'];
+      String nameUser = "";
+      if (tempUserId != null) {
+        final dataUser = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', tempUserId)
+            .limit(1);
+        nameUser = dataUser[0]['name'];
+      }
+      Map dataQueue = {};
+
+      if (assignmentData != null) {
+        if (currentQueue.isNotEmpty) {
+          dataQueue = currentQueue.firstWhereOrNull(
+              (e) => e['assignments_id'] == assignmentData['id']);
+
+          if (dataQueue.isEmpty) {
+            dataQueue = {};
+          }
+        } else {
+          // Handle jika currentQueue null atau list kosong
+          dataQueue = {}; // Atau lakukan sesuatu sesuai kebutuhan aplikasi Anda
+        }
+      } else {
+        // Handle jika assignmentData null
+        dataQueue = {}; // Atau lakukan sesuatu sesuai kebutuhan aplikasi Anda
+      }
+
+      result.add({
+        "id": r['id'],
+        "nama_role": r['name_role'],
+        "id_user": tempUserId,
+        "name": nameUser,
+        "code_id": codeId,
+        "assignment_id": assignmentId,
+        "queue": dataQueue
+      });
+    }
+
+    dataList = result;
+    update();
+    Ql.logF(result);
+  }
+
+  // berakhir di sini
   void startDataFetching() {
-    const Duration duration = Duration(seconds: 15);
+    Duration duration = const Duration(seconds: 15);
     dataTimer = Timer.periodic(duration, (Timer timer) {
-      getData(); // Panggil fungsi getData setiap 5 detik
+      // getData();
+      // getDataCurrent();
+      getDataCurrent();
+      getLastDataQueue();
     });
   }
 
@@ -59,44 +260,44 @@ class LayarController extends GetxController {
   }
 
   void getDataOnce() async {
-    await getData();
+    await getLastDataQueue();
   }
 
-  getData() async {
-    debugPrint("di panggil ulang");
-    var data = await services.viewQueue();
-    data.fold((l) {
-      debugPrint("error: $l");
-    }, (r) {
-      debugPrint(r.toString());
-      if (r['data'] == null) {
-        debugPrint("data kosong");
-      } else {
-        var lastData = r['data']['last'];
-        dataList.clear();
-        for (var item in r['data']['user_aktif']) {
-          if (item is Map<String, dynamic>) {
-            dataList.add(item);
-          }
-        }
-        kodePelayanan = lastData['kode'];
-        loket = lastData['nama_role'];
-        createdAt = lastData['created_at'];
-        updatedAt = lastData['updated_at'];
-        update();
-        debugPrint("created_at: $createdAt");
+  // getData() async {
+  //   debugPrint("di panggil ulang");
+  //   var data = await services.viewQueue();
+  //   data.fold((l) {
+  //     debugPrint("error: $l");
+  //   }, (r) {
+  //     debugPrint(r.toString());
+  //     if (r['data'] == null) {
+  //       debugPrint("data kosong");
+  //     } else {
+  //       var lastData = r['data']['last'];
+  //       dataList.clear();
+  //       for (var item in r['data']['user_aktif']) {
+  //         if (item is Map<String, dynamic>) {
+  //           dataList.add(item);
+  //         }
+  //       }
+  //       kodePelayanan = lastData['kode'];
+  //       loket = lastData['nama_role'];
+  //       createdAt = lastData['created_at'];
+  //       updatedAt = lastData['updated_at'];
+  //       update();
+  //       debugPrint("created_at: $createdAt");
 
-        mVoiceCall(
-            kode: kodePelayanan,
-            timeCreated: createdAt,
-            timeUpdate: updatedAt,
-            loket: loket);
+  //       mVoiceCall(
+  //           kode: kodePelayanan,
+  //           timeCreated: createdAt,
+  //           timeUpdate: updatedAt,
+  //           loket: loket);
 
-        saveTemporaryData(
-            kode: kodePelayanan, timeCreated: createdAt, timeUpdate: updatedAt);
-      }
-    });
-  }
+  //       saveTemporaryData(
+  //           kode: kodePelayanan, timeCreated: createdAt, timeUpdate: updatedAt);
+  //     }
+  //   });
+  // }
 
   saveTemporaryData({
     required String kode,
@@ -106,8 +307,9 @@ class LayarController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('kodePelayanan', kodePelayanan);
     prefs.setString('loket', loket);
-    prefs.setString('createdAt', createdAt);
-    prefs.setString('updatedAt', updatedAt);
+    prefs.setString('createdAt', timeCreated);
+    prefs.setString('updatedAt', timeUpdate);
+    Ql.logW("ini kode nya: $kode, $timeCreated, $timeUpdate");
   }
 
   mVoiceCall(
@@ -121,15 +323,25 @@ class LayarController extends GetxController {
     String savedCreatedAt = prefs.getString('createdAt') ?? '';
     String savedUpdatedAt = prefs.getString('updatedAt') ?? '';
 
+    Ql.logT(
+        "kode :$kode, time created :$timeCreated time update: $timeUpdate loket: $loket save pelayanan: $savedKodePelayanan");
+
+    Ql.logFatal(
+        "kode pelayanan $savedKodePelayanan, created at : $savedCreatedAt, updated at : $savedUpdatedAt");
     if (kode != savedKodePelayanan) {
       debugPrint("kode: Data baru");
       await playSoundFromCode(kode, loket);
     } else {
+      debugPrint("new time $timeCreated, current time $savedCreatedAt");
       if (timeCreated == savedCreatedAt) {
         if (timeUpdate != savedUpdatedAt) {
-          debugPrint("kode: Recall di panggil");
+          debugPrint("kode: recall di panggil ");
           await playSoundFromCode(kode, loket);
+        } else {
+          debugPrint("logic tidak sama berjalan");
         }
+      } else {
+        debugPrint("kode tidak berjalan karna time created nya tidak sama");
       }
     }
   }

@@ -55,21 +55,33 @@ class LayarView extends StatelessWidget {
                     child: SingleChildScrollView(
                       controller: ScrollController(),
                       scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children:
-                            List.generate(controller.dataList.length, (index) {
-                          var margin = index == 0 ? 0.0 : 20.0;
-                          var item = controller.dataList[index];
-                          var userCode = "-";
-                          if (item['queue'] != null) {
-                            userCode = item['queue']['kode'];
-                          }
-                          return MContainerLayer(
-                              margin: margin,
-                              loket: item['nama_role'],
-                              kode: userCode);
-                        }),
-                      ),
+                      child: controller.dataList.isEmpty
+                          ? Row(
+                              children: List.generate(4, (index) {
+                                var margin = index == 0 ? 0.0 : 20.0;
+                                return MContainerLayer(
+                                    margin: margin,
+                                    loket: "LOKET ${index + 1}",
+                                    kode: "-");
+                              }),
+                            )
+                          : Row(
+                              children: List.generate(
+                                  controller.dataList.length, (index) {
+                                var margin = index == 0 ? 0.0 : 20.0;
+                                var item = controller.dataList[index];
+
+                                var userCode = "-";
+                                var queueItem = item['queue'];
+
+                                userCode = queueItem['kode'] ?? "";
+
+                                return MContainerLayer(
+                                    margin: margin,
+                                    loket: item['nama_role'],
+                                    kode: userCode);
+                              }),
+                            ),
                     ),
                   ),
                 ],

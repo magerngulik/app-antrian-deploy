@@ -20,9 +20,8 @@ class UserPickRoleView extends StatelessWidget {
             backgroundColor: Colors.purple,
             title: const Text(
               "Role User",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
             centerTitle: true,
             actions: const [],
@@ -36,12 +35,14 @@ class UserPickRoleView extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
                 onPressed: () {
-                  controller.postRole();
+                  // controller.postRole();
+                  controller.doGetAssignment();
                 },
                 child: const Text(
                   "Lanjutkan",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                     fontSize: 20.0,
                   ),
                 ),
@@ -79,10 +80,12 @@ class UserPickRoleView extends StatelessWidget {
                       var data = controller.dataRole[index];
 
                       int id = data['id'];
+
                       return InkWell(
                         onTap: () {
                           controller.pickRole(
                               index: index, selectedRoleData: id);
+                          controller.log.e(data);
                         },
                         child: Container(
                           height: MediaQuery.of(context).size.height / 5,

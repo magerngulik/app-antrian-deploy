@@ -32,9 +32,8 @@ class CostumerServices {
 
   Future<Either<String, Map<String, dynamic>>> getTicketQueue(int id) async {
     String url = costumerPickQueue;
-    debugPrint("$url/$id");
-
-    debugPrint("ini url = $url");
+    // debugPrint("$url/$id");
+    // debugPrint("ini url = $url");
     try {
       var response = await Dio().get(
         "$url/$id",

@@ -157,8 +157,8 @@ class MDialogSuccess extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       content: SizedBox(
-        height: 200,
-        width: 200,
+        height: 400,
+        width: 400,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
