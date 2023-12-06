@@ -29,7 +29,7 @@ class UserPickRoleController extends GetxController {
   }
 
   loadRole() async {
-    Ql.logInfo("data user");
+    Ql.logI("data user");
     try {
       // var data = await RoleServices.getSupaAssignmentToday();
       var data = await RoleServices.getSupaAssignmentToday();
@@ -50,42 +50,34 @@ class UserPickRoleController extends GetxController {
           .not('id', 'in', roleUsersIds)
           .order("created_at", ascending: true);
 
-      Ql.logInfo(roleUsersIds);
-      Ql.logInfo(data);
-      Ql.logWarning(responseRole);
+      Ql.logI(roleUsersIds);
+      Ql.logI(data);
+      Ql.logW(responseRole);
       dataRole = List<Map<String, dynamic>>.from(responseRole);
+      selectedRole = dataRole[0]['id'];
       update();
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST116') {
-        Ql.logInfo(' Data is empty');
+        Ql.logI(' Data is empty');
         try {
           final responseRole = await supabase
               .from('role_users')
               .select('*')
               .order("created_at", ascending: true);
           dataRole = List<Map<String, dynamic>>.from(responseRole);
-          Ql.logInfo(responseRole);
+          selectedRole = dataRole[0]['id'];
+          Ql.logI(dataRole);
+          Ql.logI(responseRole);
           update();
         } catch (e) {
-          Ql.logError("Gagal mendapatkan data role", e);
+          Ql.logE("Gagal mendapatkan data role", e);
         }
       } else {
         Get.defaultDialog(title: "Error", middleText: "Terjadi Error: $e");
-        Ql.logError("error", e);
+        Ql.logE("error", e);
       }
     }
   }
-
-  // loadRole() async {
-  //   var data = await roleServices.getRoleUser();
-  //   data.fold((l) {
-  //     Get.back();
-  //   }, (r) {
-  //     dataRole = r;
-  //   });
-  //   log.d(dataRole);
-  //   update();
-  // }
 
   pickRole({required int index, required int selectedRoleData}) {
     selectedIndex = index;
@@ -109,6 +101,7 @@ class UserPickRoleController extends GetxController {
       loadingWidget: const LoadingScreen(),
       asyncFunction: () async {
         try {
+          Ql.logE("data seleccted role", selectedRole);
           Map dataUpload = {"user_id": idUser, "role_users_id": selectedRole};
           await supabase.from('assignments').insert(dataUpload);
           Get.dialog(MDialogSuccess(

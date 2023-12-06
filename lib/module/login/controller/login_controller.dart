@@ -1,5 +1,6 @@
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/main.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,6 +15,7 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // email.text = 'admin@admin2.com';
     email.text = 'admin@admin.com';
     // password.text = "123456789";
     password.text = "password";
@@ -74,7 +76,7 @@ class LoginController extends GetxController {
       //     password: password.text,
       //     email: email.text,
       //   );
-      //   Get.off(SidebarXExampleApp());
+
       //   return;
       // }else{
       // }
@@ -87,11 +89,15 @@ class LoginController extends GetxController {
       DateTime now = DateTime.now();
 
       // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
-      DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      // DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      DateTime startOfDay = DateTime(now.year, now.month, now.day);
 
       // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
-      DateTime endOfDay =
-          DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+      // DateTime endOfDay =
+      //     DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+      DateTime endOfDay = DateTime(now.year, now.month, now.day);
+
+      Ql.logT("start date : $startOfDay | end date: $endOfDay");
 
       if (supabase.auth.currentUser == null) {
         Get.dialog(const AlertDialogNotif(
@@ -100,39 +106,57 @@ class LoginController extends GetxController {
         return;
       }
 
+      try {
+        final data = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', supabase.auth.currentUser!.id);
+        if (data[0]['role'] == 'admin') {
+          Get.off(SidebarXExampleApp());
+          return;
+        }
+      } catch (e) {}
+
       final data = await supabase
           .from('assignments')
           .select('id,role_users_id,user_id')
-          .gte('created_at', startOfDay.toUtc())
-          .lt('created_at', endOfDay.toUtc())
+          // .gte('created_at', startOfDay.toUtc())
+          // .lt('created_at', endOfDay.toUtc())
+          .eq('created_at', startOfDay)
           .eq('user_id', supabase.auth.currentUser!.id)
           .limit(1);
 
       if ((data is List && data.isEmpty)) {
-        Ql.logInfo(' Data is empty');
+        Ql.logI(' Data is empty');
         Get.off(const UserPickRoleView());
       } else {
-        Ql.logInfo(data);
+        Ql.logI(data);
         // Get.off(const UserPickQueueView());
         String keyValue = "assignment_id";
         int dataVaue = data[0]['id'];
         await SharedPreferencesHelper.saveSingleDataInt(
             key: keyValue, value: dataVaue);
+            
 
         await SharedPreferencesHelper.saveSingleDataInt(
             key: "role_user_id", value: data[0]['role_users_id']);
         // Lakukan sesuatu dengan data yang ditemukan
+        // if (data[0]['role'] == "admin") {
+        //   // Get.off(const UserPickQueueView());
+
+        // } else {
         Get.off(const UserPickQueueView());
+        // }
       }
 
       // LoggerService.logInfo(data);
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST116') {
-        Ql.logInfo(' Data is empty');
+        Ql.logI(' Data is empty');
         Get.off(const UserPickRoleView());
       } else {
         Get.defaultDialog(title: "Error", middleText: "Terjadi Error: $e");
-        Ql.logError("error", e);
+        Ql.logE("error", e);
       }
     }
   }

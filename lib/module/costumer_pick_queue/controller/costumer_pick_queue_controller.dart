@@ -38,7 +38,7 @@ class CostumerPickQueueController extends GetxController {
         asyncFunction: () async {
           try {
             final dataGet = await supabase.from('code_queues').select('*');
-            Ql.logInfo(data);
+            Ql.logI(data);
             data = dataGet;
           } catch (e) {
             Get.dialog(MDialogError(
@@ -71,7 +71,7 @@ class CostumerPickQueueController extends GetxController {
       final dataCodeQueue =
           await supabase.from('code_queues').select('*').eq('id', id).single();
       codeQueue = dataCodeQueue['queue_code'];
-      Ql.logInfo(dataCodeQueue);
+      Ql.logI(dataCodeQueue);
     } catch (e) {
       debugPrint(e.toString());
       return;
@@ -124,10 +124,10 @@ class CostumerPickQueueController extends GetxController {
         // Data kosong
         debugPrint('Tidak ada data yang memenuhi kriteria.');
         newCode = "${codeQueue}001";
-        Map dataUpload = {"kode": newCode, "status": "waiting"};
+        Map dataUpload = {"kode": newCode, "status": "waiting", "code_id": id};
         await supabase.from('queues').insert(dataUpload);
 
-        newCode = "";
+        // newCode = "${codeQueue}001";
         String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
         String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
 

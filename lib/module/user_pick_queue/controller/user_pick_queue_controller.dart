@@ -54,7 +54,7 @@ class UserPickQueueController extends GetxController {
           .limit(1)
           .order('created_at', ascending: true);
       if (data.isEmpty) {
-        Ql.logWarning(data);
+        Ql.logW(data);
         return true;
       } else {
         // Ql.logWarning("Kondisi ke dua");
@@ -64,10 +64,10 @@ class UserPickQueueController extends GetxController {
               Get.back();
             },
             message: "Selekai Terlebih dahulu proses yang sedang berlangsung"));
-        return false;
+        return true;
       }
     } catch (e) {
-      Ql.logError("error to pass condisiton first", e);
+      Ql.logE("error to pass condisiton first", e);
       return null;
     }
   }
@@ -81,6 +81,7 @@ class UserPickQueueController extends GetxController {
     }
 
     String pickQueueCoondisition = 'waiting';
+    Ql.logWtf("wtf if : $codeQueueId");
     try {
       final data = await supabase
           .from('queues')
@@ -103,7 +104,7 @@ class UserPickQueueController extends GetxController {
 
         return;
       } else {
-        Ql.logWarning(data[0]);
+        Ql.logW(data[0]);
         var sourceQueue = data[0];
         var idQueueData = sourceQueue['id'];
         try {
@@ -122,11 +123,11 @@ class UserPickQueueController extends GetxController {
               },
               message: "Berhasil Call Antrian"));
         } catch (e) {
-          Ql.logError("error ketika ingin mengupdate queue", e);
+          Ql.logE("error ketika ingin mengupdate queue", e);
         }
       }
     } catch (e) {
-      Ql.logError('error ketika get ready assignment', e);
+      Ql.logE('error ketika get ready assignment', e);
     }
     getCurrentQueue();
     getCountQueue();
@@ -134,7 +135,7 @@ class UserPickQueueController extends GetxController {
 
   getCurrentQueue() async {
     await Future.delayed(const Duration(seconds: 1));
-    Ql.logError("data assignmen", assignmentId);
+    Ql.logE("data assignmen", assignmentId);
     try {
       final dataCurentAssignment = await supabase
           .from('queues')
@@ -143,7 +144,7 @@ class UserPickQueueController extends GetxController {
           .eq('assignments_id', assignmentId)
           .limit(1);
 
-      Ql.logWarning("$dataCurentAssignment $assignmentId");
+      Ql.logW("$dataCurentAssignment $assignmentId");
       if (dataCurentAssignment.isEmpty) {
         Ql.logD("data is empty bro");
         currentQueue = "-";
@@ -152,7 +153,7 @@ class UserPickQueueController extends GetxController {
         currentQueue = dataCurentAssignment[0]['kode'];
       }
     } catch (e) {
-      Ql.logError("error ketika get current queue", e);
+      Ql.logE("error ketika get current queue", e);
     }
     update();
   }
@@ -175,7 +176,7 @@ class UserPickQueueController extends GetxController {
       }
       update();
     } catch (e) {
-      Ql.logError("error ketika ingin mendapatkan jumlaho data", e);
+      Ql.logE("error ketika ingin mendapatkan jumlaho data", e);
     }
   }
 
@@ -192,6 +193,8 @@ class UserPickQueueController extends GetxController {
       roleUserId =
           await SharedPreferencesHelper.getSingleDataInt(key: "role_user_id") ??
               0;
+
+      Ql.logWtf("role user; $roleUserId");
 
       if (assignmentId == 0 || roleUserId == 0) {
         log.w("assingment id atau role userid tidak di temukan");
@@ -210,10 +213,11 @@ class UserPickQueueController extends GetxController {
           .select('*')
           .eq('id', roleUserId)
           .limit(1);
+      Ql.logT(dataRoleUser);
       codeId = dataRoleUser[0]['code_id'];
       Ql.logD(codeId);
     } catch (e) {
-      Ql.logError("error ketika get role user", "$e");
+      Ql.logE("error ketika get role user", "$e");
     }
 
     try {
@@ -224,9 +228,9 @@ class UserPickQueueController extends GetxController {
           .limit(1);
 
       codeQueueId = dataCodeQueue[0]['id'];
-      Ql.logWarning(codeQueueId);
+      Ql.logW(codeQueueId);
     } catch (e) {
-      Ql.logError("error ketika get queue user", "$e");
+      Ql.logE("error ketika get queue user", "$e");
     }
   }
 
@@ -252,9 +256,9 @@ class UserPickQueueController extends GetxController {
             message: "TIdak ada data yang di layani"));
       } else {
         // Ql.logWarning(data);
-        Ql.logInfo("status jalan");
+        Ql.logI("status jalan");
         var currentData = data[0];
-        Ql.logWarning(currentData);
+        Ql.logW(currentData);
         var confirmCurrentId = currentData['id'];
 
         try {
@@ -270,6 +274,7 @@ class UserPickQueueController extends GetxController {
                 Get.back();
                 getCurrentQueue();
                 getCountQueue();
+                update();
               },
               message: "Berhasil untuk menyelesaikan transaksi"));
         } catch (e) {
@@ -277,6 +282,7 @@ class UserPickQueueController extends GetxController {
               onTap: () {
                 getCurrentQueue();
                 getCountQueue();
+                update();
               },
               message:
                   "Terjadi kesalahan ketika inggin update data di confirm : $e"));
@@ -291,6 +297,7 @@ class UserPickQueueController extends GetxController {
           message: "Terjadi error ketika mendapatkan current data : $e"));
       return;
     }
+    update();
   }
 
   //menyudahi sessi pelayanan, merubah status dari queue costumer menjadi complete
@@ -315,9 +322,9 @@ class UserPickQueueController extends GetxController {
             message: "TIdak ada data yang di layani"));
       } else {
         // Ql.logWarning(data);
-        Ql.logInfo("status jalan");
+        Ql.logI("status jalan");
         var currentData = data[0];
-        Ql.logWarning(currentData);
+        Ql.logW(currentData);
         var confirmCurrentId = currentData['id'];
 
         try {
@@ -333,6 +340,7 @@ class UserPickQueueController extends GetxController {
                 Get.back();
                 getCurrentQueue();
                 getCountQueue();
+                update();
               },
               message: "Berhasil untuk skip transaksi"));
         } catch (e) {
@@ -340,6 +348,7 @@ class UserPickQueueController extends GetxController {
               onTap: () {
                 getCurrentQueue();
                 getCountQueue();
+                update();
               },
               message:
                   "Terjadi kesalahan ketika inggin update data di skip : $e"));
@@ -354,6 +363,7 @@ class UserPickQueueController extends GetxController {
           message: "Terjadi error ketika mendapatkan current data : $e"));
       return;
     }
+    update();
   }
 
   recallQueue() async {
@@ -377,9 +387,9 @@ class UserPickQueueController extends GetxController {
             message: "TIdak ada data yang di layani"));
       } else {
         // Ql.logWarning(data);
-        Ql.logInfo("status jalan");
+        Ql.logI("status jalan");
         var currentData = data[0];
-        Ql.logWarning(currentData);
+        Ql.logW(currentData);
         var confirmCurrentId = currentData['id'];
 
         final currentTimestamp = DateTime.now();
@@ -406,7 +416,7 @@ class UserPickQueueController extends GetxController {
                 Get.back();
                 getCurrentQueue();
                 getCountQueue();
-                Ql.logError("error ketika recall", e);
+                Ql.logE("error ketika recall", e);
               },
               message:
                   "Terjadi kesalahan ketika inggin update data di recall : $e"));
@@ -422,6 +432,142 @@ class UserPickQueueController extends GetxController {
           message: "Terjadi error ketika mendapatkan current data : $e"));
       return;
     }
+  }
+
+  breakeQueue() async {
+    debugPrint("breake colect");
+    var confirmCondition = "process";
+    // var confirmCondition = "complete";
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('assignments_id', assignmentId)
+          .eq('status', confirmCondition)
+          .limit(1)
+          .order('created_at', ascending: true);
+
+      if (data.isEmpty) {
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "TIdak ada data yang di layani"));
+      } else {
+        // Ql.logWarning(data);
+        Ql.logI("status jalan");
+        var currentData = data[0];
+        Ql.logW(currentData);
+        var confirmCurrentId = currentData['id'];
+
+        try {
+          Map dataChange = {"status": 'break'};
+
+          await supabase
+              .from('queues')
+              .update(dataChange)
+              .match({'id': confirmCurrentId});
+
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+                getCurrentQueue();
+                getCountQueue();
+                update();
+              },
+              message: "Berhasil untuk skip transaksi"));
+        } catch (e) {
+          Get.dialog(MDialogError(
+              onTap: () {
+                getCurrentQueue();
+                getCountQueue();
+                update();
+              },
+              message:
+                  "Terjadi kesalahan ketika inggin update data di skip : $e"));
+        }
+      }
+    } catch (e) {
+      Get.dialog(MDialogError(
+          onTap: () {
+            getCurrentQueue();
+            getCountQueue();
+          },
+          message: "Terjadi error ketika mendapatkan current data : $e"));
+      return;
+    }
+    update();
+  }
+
+  countinueQueue() async {
+    bool onProsess = await isProcess() ?? false;
+
+    if (onProsess == false) {
+      return;
+    }
+
+    debugPrint("breake colect");
+    var confirmCondition = "break";
+    // var confirmCondition = "complete";
+    try {
+      final data = await supabase
+          .from('queues')
+          .select('*')
+          .eq('assignments_id', assignmentId)
+          .eq('status', confirmCondition)
+          .limit(1)
+          .order('created_at', ascending: true);
+
+      if (data.isEmpty) {
+        Get.dialog(MDialogError(
+            onTap: () {
+              Get.back();
+            },
+            message: "TIdak ada data yang di layani"));
+      } else {
+        // Ql.logWarning(data);
+        Ql.logI("status jalan");
+        var currentData = data[0];
+        Ql.logW(currentData);
+        var confirmCurrentId = currentData['id'];
+
+        try {
+          Map dataChange = {"status": 'process'};
+
+          await supabase
+              .from('queues')
+              .update(dataChange)
+              .match({'id': confirmCurrentId});
+
+          Get.dialog(MDialogSuccess(
+              onTap: () {
+                Get.back();
+                getCurrentQueue();
+                getCountQueue();
+                update();
+              },
+              message: "Berhasil untuk skip transaksi"));
+        } catch (e) {
+          Get.dialog(MDialogError(
+              onTap: () {
+                getCurrentQueue();
+                getCountQueue();
+                update();
+              },
+              message:
+                  "Terjadi kesalahan ketika inggin update data di skip : $e"));
+        }
+      }
+    } catch (e) {
+      Get.dialog(MDialogError(
+          onTap: () {
+            getCurrentQueue();
+            getCountQueue();
+          },
+          message: "Terjadi error ketika mendapatkan current data : $e"));
+      return;
+    }
+    update();
   }
 
   doLogout() async {

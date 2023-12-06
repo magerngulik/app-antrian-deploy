@@ -35,7 +35,7 @@ void main() async {
           scrollBehavior: MyCustomScrollBehavior(),
           title: 'Antrian App',
           theme: ThemeData(
-            useMaterial3: true,
+            useMaterial3: false,
             primaryColor: primaryColor,
             canvasColor: canvasColor,
             scaffoldBackgroundColor: scaffoldBackgroundColor,
@@ -44,10 +44,7 @@ void main() async {
                 color: Colors.white,
                 fontSize: 46,
                 fontWeight: FontWeight.w800,
-
               ),
-              
-             
             ),
           ),
           home: const MyApp(),
