@@ -76,39 +76,37 @@ class LoginController extends GetxController {
         );
         Get.off(SidebarXExampleApp());
         return;
-      }
-
-      DateTime now = DateTime.now();
-
-      // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
-      DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
-
-      // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
-      DateTime endOfDay =
-          DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
-
-      final data = await supabase
-          .from('assignments')
-          .select('id,role_users_id,user_id')
-          .gte('created_at', startOfDay.toUtc())
-          .lt('created_at', endOfDay.toUtc())
-          .eq('user_id', uuid)
-          .single();
-
-      if ((data is List && data.isEmpty)) {
-        LoggerService.logInfo(' Data is empty');
-        Get.off(const UserPickRoleView());
       } else {
-        LoggerService.logInfo(data);
-        // Get.off(const UserPickQueueView());
-        String keyValue = "assignment_id";
-        int dataVaue = data['id'];
-        await SharedPreferencesHelper.saveSingleDataInt(
-            key: keyValue, value: dataVaue);
-        // Lakukan sesuatu dengan data yang ditemukan
-      }
+        DateTime now = DateTime.now();
 
-      // LoggerService.logInfo(data);
+        // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
+        DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+        // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
+        DateTime endOfDay =
+            DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+
+        final data = await supabase
+            .from('assignments')
+            .select('id,role_users_id,user_id')
+            .gte('created_at', startOfDay.toUtc())
+            .lt('created_at', endOfDay.toUtc())
+            .eq('user_id', uuid)
+            .single();
+
+        if ((data is List && data.isEmpty)) {
+          LoggerService.logInfo(' Data is empty');
+          Get.off(const UserPickRoleView());
+        } else {
+          LoggerService.logInfo(data);
+          // Get.off(const UserPickQueueView());
+          String keyValue = "assignment_id";
+          int dataVaue = data['id'];
+          await SharedPreferencesHelper.saveSingleDataInt(
+              key: keyValue, value: dataVaue);
+          // Lakukan sesuatu dengan data yang ditemukan
+        }
+      } // LoggerService.logInfo(data);
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST116') {
         LoggerService.logInfo(' Data is empty');
