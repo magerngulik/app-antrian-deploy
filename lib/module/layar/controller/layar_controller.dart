@@ -18,8 +18,8 @@ class LayarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // getDataOnce();
-    // startDataFetching();
+    getDataOnce();
+    startDataFetching();
     controllerVideoSupabase = VideoPlayerController.networkUrl(
       formatHint: VideoFormat.hls,
       Uri.parse(mediaVideo!['link']),
@@ -363,9 +363,14 @@ class LayarController extends GetxController {
       debugPrint("kondisi pertama berjalan = $code");
 
       String stringInput = code;
-      String currentCode = stringInput.replaceAll("0", "");
+      String currentCode = stringInput.replaceFirst("0", "");
+      // String currentCode =
+      //     stringInput.substring(0, 2) + stringInput.substring(3);
+
+      debugPrint("current code $currentCode");
+      // debugPrint("position code ${code[2]}");
       for (int i = 0; i < currentCode.length; i++) {
-        final character = code[i];
+        final character = currentCode[i];
         debugPrint(character);
         await playSoundForCharacter(character, player);
         await Future.delayed(const Duration(seconds: 1));
