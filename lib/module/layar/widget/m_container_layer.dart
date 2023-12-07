@@ -66,7 +66,7 @@ class MContainerLayer extends StatelessWidget {
               kode,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: isTablet ? 50 : 100.0,
+                fontSize: isTablet ? 50 : 60.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),

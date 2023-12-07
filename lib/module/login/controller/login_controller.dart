@@ -71,43 +71,82 @@ class LoginController extends GetxController {
     try {
       // final startOfDay = DateTime(2023, 11, 19, 0, 0, 0);
       // final endOfDay = DateTime(2023, 11, 19, 23, 59, 59, 999, 999);
-      if (email.text == "admin@admin2.com") {
-        await supabase.auth.signInWithPassword(
-          password: password.text,
-          email: email.text,
-        );
-        Get.off(SidebarXExampleApp());
-        return;
-      }
+      // if (email.text == "admin@admin2.com") {
+      //   await supabase.auth.signInWithPassword(
+      //     password: password.text,
+      //     email: email.text,
+      //   );
+
+      //   return;
+      // }else{
+      // }
+
+      await supabase.auth.signInWithPassword(
+        password: password.text,
+        email: email.text,
+      );
 
       DateTime now = DateTime.now();
 
       // Menetapkan jam, menit, detik, dan milidetik ke nilai awal hari
-      DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      // DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      DateTime startOfDay = DateTime(now.year, now.month, now.day);
 
       // Menetapkan jam, menit, detik, dan milidetik ke nilai akhir hari
-      DateTime endOfDay =
-          DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+      // DateTime endOfDay =
+      //     DateTime(now.year, now.month, now.day, 23, 59, 59, 999, 999);
+      DateTime endOfDay = DateTime(now.year, now.month, now.day);
+
+      Ql.logT("start date : $startOfDay | end date: $endOfDay");
+
+      if (supabase.auth.currentUser == null) {
+        Get.dialog(const AlertDialogNotif(
+            title: "Anda belum login silahkan login terlebih dahulu",
+            srcImages: 'assets/images/notif_failed.png'));
+        return;
+      }
+
+      try {
+        final data = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', supabase.auth.currentUser!.id);
+        if (data[0]['role'] == 'admin') {
+          Get.off(SidebarXExampleApp());
+          return;
+        }
+      } catch (e) {}
 
       final data = await supabase
           .from('assignments')
           .select('id,role_users_id,user_id')
-          .gte('created_at', startOfDay.toUtc())
-          .lt('created_at', endOfDay.toUtc())
-          .eq('user_id', uuid)
-          .single();
+          // .gte('created_at', startOfDay.toUtc())
+          // .lt('created_at', endOfDay.toUtc())
+          .eq('created_at', startOfDay)
+          .eq('user_id', supabase.auth.currentUser!.id)
+          .limit(1);
 
       if ((data is List && data.isEmpty)) {
-        LoggerService.logInfo(' Data is empty');
+        Ql.logI(' Data is empty');
         Get.off(const UserPickRoleView());
       } else {
-        LoggerService.logInfo(data);
+        Ql.logI(data);
         // Get.off(const UserPickQueueView());
         String keyValue = "assignment_id";
-        int dataVaue = data['id'];
+        int dataVaue = data[0]['id'];
         await SharedPreferencesHelper.saveSingleDataInt(
             key: keyValue, value: dataVaue);
+            
+
+        await SharedPreferencesHelper.saveSingleDataInt(
+            key: "role_user_id", value: data[0]['role_users_id']);
         // Lakukan sesuatu dengan data yang ditemukan
+        // if (data[0]['role'] == "admin") {
+        //   // Get.off(const UserPickQueueView());
+
+        // } else {
+        Get.off(const UserPickQueueView());
+        // }
       }
 
       // LoggerService.logInfo(data);
