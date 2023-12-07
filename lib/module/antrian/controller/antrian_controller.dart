@@ -1,19 +1,12 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:antrian_app/core.dart';
 import 'package:antrian_app/main.dart';
-import 'package:antrian_app/shared/services/supabase_service.dart';
-import 'package:antrian_app/shared/util/loading_screen.dart';
-import 'package:antrian_app/shared/widget/show_loading/dialog/alert_dialog_notif.dart';
-import 'package:antrian_app/shared/widget/show_loading/show_loading.dart';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
-
-import '../view/antrian_view.dart';
 
 class AntrianController extends GetxController {
   AntrianView? view;
