@@ -32,6 +32,7 @@ class UserPickQueueView extends StatelessWidget {
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
                   controller.getCurrentQueue();
+                  controller.getCountQueue();
                 },
               ),
               IconButton(
@@ -39,6 +40,7 @@ class UserPickQueueView extends StatelessWidget {
                 onPressed: () {
                   Get.to(const CostumerPickQueueView())?.then((value) {
                     controller.getCurrentQueue();
+                    controller.getCountQueue();
                   });
                 },
               ),
@@ -107,6 +109,19 @@ class UserPickQueueView extends StatelessWidget {
                 ontapFunction4: () {
                   // controller.skipQueue();
                 },
+                titleFunction5: "WAITING",
+                ontapFunction5: () {
+                  // controller.skipQueue();
+                  // controller.breakeQueue();
+                  debugPrint("waiting click");
+                  controller.breakeQueue();
+                },
+                titleFunction6: "TAKE WAITING",
+                ontapFunction6: () {
+                  // controller.skipQueue();
+                  debugPrint("take waiting click");
+                  controller.countinueQueue();
+                },
               )),
         ],
       ),
@@ -156,6 +171,18 @@ class UserPickQueueView extends StatelessWidget {
                 titleFunction4: "SKIP",
                 ontapFunction4: () {
                   controller.skipQueue();
+                },
+                titleFunction5: "WAITING",
+                ontapFunction5: () {
+                  // controller.skipQueue();
+                  controller.breakeQueue();
+                  // debugPrint("waiting click");
+                },
+                titleFunction6: "TAKE WAITING",
+                ontapFunction6: () {
+                  // controller.skipQueue();
+                  debugPrint("take waiting click");
+                  controller.countinueQueue();
                 },
               )),
         ],

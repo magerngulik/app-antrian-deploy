@@ -11,6 +11,10 @@ class SecondBoxPickQueue extends StatelessWidget {
   final Function() ontapFunction3;
   final String titleFunction4;
   final Function() ontapFunction4;
+  final String titleFunction5;
+  final Function() ontapFunction5;
+  final String titleFunction6;
+  final Function() ontapFunction6;
   final bool? isMobile;
 
   const SecondBoxPickQueue({
@@ -24,6 +28,10 @@ class SecondBoxPickQueue extends StatelessWidget {
     required this.ontapFunction3,
     required this.titleFunction4,
     required this.ontapFunction4,
+    required this.titleFunction5,
+    required this.ontapFunction5,
+    required this.titleFunction6,
+    required this.ontapFunction6,
     this.isMobile,
   }) : super(key: key);
 
@@ -116,6 +124,7 @@ class SecondBoxPickQueue extends StatelessWidget {
                                     onPressed: () => ontapFunction1(),
                                     child: Text(
                                       titleFunction1,
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30.0,
@@ -140,6 +149,7 @@ class SecondBoxPickQueue extends StatelessWidget {
                                     onPressed: () => ontapFunction2(),
                                     child: Text(
                                       titleFunction2,
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30.0,
@@ -170,6 +180,7 @@ class SecondBoxPickQueue extends StatelessWidget {
                                     onPressed: () => ontapFunction3(),
                                     child: Text(
                                       titleFunction3,
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30.0,
@@ -194,6 +205,57 @@ class SecondBoxPickQueue extends StatelessWidget {
                                     onPressed: () => ontapFunction4(),
                                     child: Text(
                                       titleFunction4,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  height:
+                                      MediaQuery.of(context).size.height / 5,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.purple,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    onPressed: () => ontapFunction5(),
+                                    child: Text(
+                                      titleFunction5,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  height:
+                                      MediaQuery.of(context).size.height / 5,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.purple,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    onPressed: () => ontapFunction6(),
+                                    child: Text(
+                                      titleFunction6,
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30.0,
@@ -293,6 +355,52 @@ class SecondBoxPickQueue extends StatelessWidget {
                               onPressed: () => ontapFunction4(),
                               child: Text(
                                 titleFunction4,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 5),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.purple,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () => ontapFunction5(),
+                              child: Text(
+                                titleFunction5,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 5),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.purple,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () => ontapFunction6(),
+                              child: Text(
+                                titleFunction6,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30.0,

@@ -56,7 +56,7 @@ class LayarController extends GetxController {
           .eq('status', 'process')
           // .gte('created_at', startOfDay.toIso8601String())
           // .lte('created_at', endOfDay.toIso8601String())
-          .order('id');
+          .order('created_at', ascending: true);
       Ql.logF(data);
       var dataQueue = DataModel.fromJson(data[0]);
       Map existQueue = {};
@@ -262,6 +262,7 @@ class LayarController extends GetxController {
   void getDataOnce() async {
     await getDataCurrent();
     await getLastDataQueue();
+    await getDataCurrent();
   }
 
   // getData() async {

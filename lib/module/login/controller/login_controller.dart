@@ -115,7 +115,9 @@ class LoginController extends GetxController {
           Get.off(SidebarXExampleApp());
           return;
         }
-      } catch (e) {}
+      } catch (e) {
+        debugPrint("error ketika get role: $e");
+      }
 
       final data = await supabase
           .from('assignments')
@@ -125,6 +127,8 @@ class LoginController extends GetxController {
           .eq('created_at', startOfDay)
           .eq('user_id', supabase.auth.currentUser!.id)
           .limit(1);
+
+      Ql.logD(data);
 
       if ((data is List && data.isEmpty)) {
         Ql.logI(' Data is empty');
@@ -136,17 +140,11 @@ class LoginController extends GetxController {
         int dataVaue = data[0]['id'];
         await SharedPreferencesHelper.saveSingleDataInt(
             key: keyValue, value: dataVaue);
-            
 
         await SharedPreferencesHelper.saveSingleDataInt(
             key: "role_user_id", value: data[0]['role_users_id']);
-        // Lakukan sesuatu dengan data yang ditemukan
-        // if (data[0]['role'] == "admin") {
-        //   // Get.off(const UserPickQueueView());
 
-        // } else {
         Get.off(const UserPickQueueView());
-        // }
       }
 
       // LoggerService.logInfo(data);
