@@ -24,6 +24,19 @@ class LayarView extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.purple,
             title: const Text("Layar"),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  controller.playSoundFromCode("A011", "Teler 1");
+                },
+                child: const Text("Test"),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Container(

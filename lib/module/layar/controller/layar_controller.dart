@@ -18,8 +18,8 @@ class LayarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getDataOnce();
-    startDataFetching();
+    // getDataOnce();
+    // startDataFetching();
     controllerVideoSupabase = VideoPlayerController.networkUrl(
       formatHint: VideoFormat.hls,
       Uri.parse(mediaVideo!['link']),
@@ -358,11 +358,25 @@ class LayarController extends GetxController {
     await Future.delayed(const Duration(seconds: 1));
     debugPrint("---------");
 
-    for (int i = 0; i < code.length; i++) {
-      final character = code[i];
-      debugPrint(character);
-      await playSoundForCharacter(character, player);
-      await Future.delayed(const Duration(seconds: 1));
+    if (int.parse(code[2]) != 0) {
+      debugPrint("kondisi pertama berjalan = $code");
+
+      String stringInput = code;
+      String currentCode = stringInput.replaceAll("0", "");
+      for (int i = 0; i < currentCode.length; i++) {
+        final character = code[i];
+        debugPrint(character);
+        await playSoundForCharacter(character, player);
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    } else {
+      debugPrint("kondisi kedua berjalan = $code");
+      for (int i = 0; i < code.length; i++) {
+        final character = code[i];
+        debugPrint(character);
+        await playSoundForCharacter(character, player);
+        await Future.delayed(const Duration(seconds: 1));
+      }
     }
 
     debugPrint("Ke: ${code[0]}");
